@@ -1,11 +1,13 @@
 import React        from 'react'
 import ReactDOM     from 'react-dom'
-import { Provider } from 'react-redux'
-import Layout       from './components/Layout'
-import store        from './store'
+import { 
+  browserHistory/*, 
+  hashHistory*/ }   from 'react-router';
+import Root         from './Root';
 
-const app = document.getElementById('app')
+// const history = (process.env.NODE_ENV === 'production') ? browserHistory : hashHistory;
 
-ReactDOM.render(<Provider store={store}>
-  <Layout />
-</Provider>, app);
+render(
+  <Root {...{ browserHistory }} />,
+  document.getElementById('app')
+);
