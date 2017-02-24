@@ -2,23 +2,31 @@ import React       from 'react';
 import { Route }   from 'react-router';
 import App         from './App';
 import SignupRoute from './SignupRoute';
-import LoginRoute  from './LoginRoute';
+// import LoginRoute  from './LoginRoute';
 import fillStore   from '../utils/fillStore';
 import NotFound    from '../components/NotFound';
 
 const routes = (
   <Route component={App}>
     <Route path="/signup" component={SignupRoute} />
-    <Route path="/login" component={LoginRoute} />
-    <Route path="/" component={LoginRoute} />
-
-    <Route requireAuth>
-      <Route path="/dashboard" component={DashboardRoute} />
-    </Route>
-
+    <Route path="/" component={SignupRoute} />
     <Route path="*" component={NotFound} />
   </Route>
 );
+
+// const routes = (
+//   <Route component={App}>
+//     <Route path="/signup" component={SignupRoute} />
+//     <Route path="/login" component={LoginRoute} />
+//     <Route path="/" component={SignupRoute} />
+
+//     <Route requireAuth>
+//       <Route path="/dashboard" component={DashboardRoute} />
+//     </Route>
+
+//     <Route path="*" component={NotFound} />
+//   </Route>
+// );
 
 function walk(routes, cb) {
   cb(routes);
