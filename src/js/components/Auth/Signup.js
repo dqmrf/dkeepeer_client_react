@@ -3,7 +3,8 @@ import React, { PropTypes } from 'react';
 export default class Signup extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
-    signup: PropTypes.func.isRequired
+    signup: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired
   }
 
   static contextTypes = {
@@ -11,24 +12,32 @@ export default class Signup extends React.Component {
   }
 
   state = {
-    email: '',
-    password: ''
+    user: {
+      email: '',
+      firstName: '',
+      lastName: '',
+      password: '',
+      passwordConfirmation: ''
+    }
   };
 
   handleChange = field => e => {
     e.preventDefault();
-    this.setState({ [field]: e.target.value });
+    this.setState({ ['user']: {
+      ...this.state.user,
+      [field]: e.target.value
+    } });
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    const { email, password } = this.state;
-    this.props.signup(email, password);
+    const { user } = this.state;
+    this.props.handleSubmit(user);
   }
 
   render() {
     const { auth: { error } } = this.props;
-    const { email, password } = this.state;
+    const { email, firstName, lastName, password, passwordConfirmation } = this.state;
 
     return(
       <div>
@@ -49,8 +58,28 @@ export default class Signup extends React.Component {
             required
           />
 
+          <label htmlFor="firstName">First name</label>
+          <input
+            value={firstName}
+            onChange={this.handleChange('firstName')}
+            id="firstName"
+            type="text"
+            placeholder="First name"
+            required
+          />
+
+          <label htmlFor="lastName">Last name</label>
+          <input
+            value={lastName}
+            onChange={this.handleChange('lastName')}
+            id="lastName"
+            type="text"
+            placeholder="Last name"
+            required
+          />
+
           <label htmlFor="password">Password</label>
-           <input
+          <input
             value={password}
             onChange={this.handleChange('password')}
             id="password"
@@ -59,9 +88,17 @@ export default class Signup extends React.Component {
             required
           />
 
-          <button
-              type="submit"
-            >
+          <label htmlFor="passwordConfirmation">Password confirmation</label>
+          <input
+            value={passwordConfirmation}
+            onChange={this.handleChange('passwordConfirmation')}
+            id="passwordConfirmation"
+            type="password"
+            placeholder="Password confirmation"
+            required
+          />
+
+          <button type="submit">
             Sign me up
           </button>
         </form>

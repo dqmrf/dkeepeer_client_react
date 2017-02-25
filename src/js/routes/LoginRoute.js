@@ -9,28 +9,27 @@ import Signup               from '../components/Auth/Signup';
   signup
 })
 
-export default class SignupRoute extends React.Component {
+export default class LoginRoute extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
-    signup: PropTypes.func.isRequired
+    login: PropTypes.func.isRequired
   }
 
   static contextTypes = {
     router: React.PropTypes.object
   }
 
-  handleSubmit = (data) => {
+  handleLogin = (email, password) => {
     const router = this.context.router;
-    this.props.signup(data, router);
+    this.props.login(email, password, router);
   }
 
   render() {
     return (
-        <Signup
-          auth={this.props}
-          signup={this.props.signup}
-          handleSubmit={this.handleSubmit}
-        />
+      <Login
+        auth={this.props}
+        handleLogin={this.handleLogin}
+       />
     );
   }
 }

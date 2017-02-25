@@ -18,7 +18,6 @@ export function createRedux(initialState) {
 
   const finalCreateStore = applyMiddleware(...middleware)(createStore);
   const store = finalCreateStore(reducer, initialState);
-  console.log(store.getState());
 
   if (module.hot) {
     const nextReducer = require('../reducers');

@@ -2,10 +2,12 @@ import axios             from 'axios';
 import Actions           from '../constants/actions';
 import cookie            from '../utils/cookie';
 import getHeaders        from '../utils/getHeaders.js';
+import prepareJson       from '../utils/prepareJson';
 import redirectBackAfter from '../utils/redirectBackAfter';
 
 // i've changed port for a while, because of rails server can't listening on port 3000
 const baseUrl = 'http://localhost:3001';
+const headers = {'Content-Type': 'application/json'} 
 
 const {
   SIGNUP_SUCCESS,
@@ -34,16 +36,18 @@ function saveAuthToken(token) {
   });
 }
 
-export function signup(email, password, router) {
+export function signup(data, router) {
   return async (dispatch) => {
     try {
-      // it is temporary.
-      let data = await axios.post(`${baseUrl}/api/users`, {
-        user: {
-          email,
-          password
-        }
-      });
+      let url = `${baseUrl}/api/users`;
+      let body = prepareJson({user: data});
+      const res = await axios.post(url, body, { headers: headers });
+
+      if (res && res.status == 200) {
+        const { query } = router.location;
+        const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/login';
+        router.push(redirectTo);
+      }
     } catch(e) {
       dispatch({
         type: SIGNUP_FAILURE,
