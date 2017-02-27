@@ -14,5 +14,7 @@ import { connect }          from 'react-redux';
 // })
 
 export default class DashboardRoute extends React.Component {
-
+  render() {
+    return(<h2>Dashboard route</h2>);
+  }
 }

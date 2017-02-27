@@ -5,7 +5,10 @@ import {
   Redirect, 
   IndexRedirect }        from 'react-router';
 import App               from './App';
+import AdminRoute        from './AdminRoute';
+import GuestRoute        from './GuestRoute';
 import SignupRoute       from './SignupRoute';
+import RequireAuth       from './RequireAuth';
 import LoginRoute        from './LoginRoute';
 import DashboardRoute    from './DashboardRoute';
 import fillStore         from '../utils/fillStore';
@@ -14,12 +17,14 @@ import NotFound          from '../components/NotFound';
 
 const routes = (
   <Route path="/" component={App}>
-    <IndexRedirect to="admin" component={DashboardRoute} />
+    <IndexRedirect to="admin" />
 
-    <Route path="signup" component={SignupRoute} />
-    <Route path="login" component={LoginRoute} />
-    
-    <Route path="admin" requireAuth>
+    <Route component={RequireAuth(GuestRoute, false)} >
+      <Route path="signup" component={SignupRoute} />
+      <Route path="login" component={LoginRoute} />
+    </Route>
+
+    <Route path="admin" component={RequireAuth(AdminRoute)} >
       <IndexRoute component={DashboardRoute} />
       <Route path="dashboard" component={DashboardRoute} />
     </Route>
@@ -42,10 +47,9 @@ export default (store, client) => {
   return walk(Route.createRouteFromReactElement(routes), route => {
     route.onEnter = (nextState, transition) => {
       const loggedIn = !!store.getState().auth.token;
+      console.log(store.getState().auth);
 
-      if (route.requireAuth && !loggedIn) {
-        transition(...redirectBackAfter('/login', nextState.location));
-      } else if (client) {
+      if (client) {
         fillStore(store, nextState, [route.component]);
       }
     };
