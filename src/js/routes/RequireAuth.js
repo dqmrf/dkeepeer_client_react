@@ -8,11 +8,13 @@ export default function (ComposedComponent, req=true) {
     };
 
     componentWillMount() {
-      console.log(this.props);
-      if (req && !this.props.authenticated) {
-        this.context.router.push('/login');
-      } else if (!req && this.props.authenticated) {
-        this.context.router.push('/admin');
+      const { router } = this.context;
+      const { authenticated } = this.props;
+      
+      if (req && !authenticated) {
+        router.push('/login');
+      } else if (!req && authenticated) {
+        router.push('/admin');
       }
     }
 
