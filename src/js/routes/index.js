@@ -1,27 +1,32 @@
-import React       from 'react';
-import { Route }   from 'react-router';
-import App         from './App';
-import SignupRoute from './SignupRoute';
-import LoginRoute  from './LoginRoute';
-import fillStore   from '../utils/fillStore';
-import NotFound    from '../components/NotFound';
+import React            from 'react';
+import { 
+  Route, 
+  IndexRoute, 
+  Redirect, 
+  IndexRedirect }        from 'react-router';
+import App               from './App';
+import SignupRoute       from './SignupRoute';
+import LoginRoute        from './LoginRoute';
+import DashboardRoute    from './DashboardRoute';
+import fillStore         from '../utils/fillStore';
+import redirectBackAfter from '../utils/redirectBackAfter';
+import NotFound          from '../components/NotFound';
 
 const routes = (
-  <Route component={App}>
-    <Route path="/signup" component={SignupRoute} />
-    <Route path="/login" component={LoginRoute} />
-    <Route path="/" component={SignupRoute} />
-    <Route path="*" component={NotFound} />
+  <Route path="/" component={App}>
+    <IndexRedirect to="admin" component={DashboardRoute} />
+
+    <Route path="signup" component={SignupRoute} />
+    <Route path="login" component={LoginRoute} />
+    
+    <Route path="admin" requireAuth>
+      <IndexRoute component={DashboardRoute} />
+      <Route path="dashboard" component={DashboardRoute} />
+    </Route>
+
+    <Route path='*' component={NotFound} />
   </Route>
 );
-
-// const routes = (
-//   <Route component={App}>
-//     <Route requireAuth>
-//       <Route path="/dashboard" component={DashboardRoute} />
-//     </Route>
-//   </Route>
-// );
 
 function walk(routes, cb) {
   cb(routes);
@@ -39,7 +44,7 @@ export default (store, client) => {
       const loggedIn = !!store.getState().auth.token;
 
       if (route.requireAuth && !loggedIn) {
-        transition.to(...redirectBackAfter('/login', nextState.location));
+        transition(...redirectBackAfter('/login', nextState.location));
       } else if (client) {
         fillStore(store, nextState, [route.component]);
       }

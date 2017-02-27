@@ -37,7 +37,8 @@ export default class Signup extends React.Component {
 
   render() {
     const { auth: { error } } = this.props;
-    const { email, firstName, lastName, password, passwordConfirmation } = this.state;
+    const { user } = this.state;
+    const { email, firstName, lastName, password, passwordConfirmation } = user;
 
     return(
       <div>

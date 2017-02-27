@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect }          from 'react-redux';
-import { signup }           from '../actions/auth';
-import Signup               from '../components/Auth/Signup';
+import { login }            from '../actions/auth';
+import Login                from '../components/Auth/Login';
 
 @connect(state => ({
   auth: state.auth
 }), {
-  signup
+  login
 })
 
 export default class LoginRoute extends React.Component {
@@ -19,9 +19,9 @@ export default class LoginRoute extends React.Component {
     router: React.PropTypes.object
   }
 
-  handleLogin = (email, password) => {
+  handleLogin = (data) => {
     const router = this.context.router;
-    this.props.login(email, password, router);
+    this.props.login(data, router);
   }
 
   render() {

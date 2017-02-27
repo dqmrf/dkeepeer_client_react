@@ -27,23 +27,24 @@ export default class Login extends React.Component {
 
   handleLogin = e => {
     e.preventDefault();
-    const { email, password } = this.state;
-    this.props.handleLogin(email, password);
+    const { user } = this.state;
+    this.props.handleLogin(user);
   }
 
   render() {
     const { auth: { error } } = this.props;
-    const { email, password } = this.state;
+    const { user } = this.state;
+    const { email, password } = user;
 
     return(
       <div>
-        <h2>Sign up</h2>
+        <h2>Login</h2>
 
         {error
           ? <div>{error.message}</div>
           : null}
 
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleLogin}>
           <label htmlFor="email">Email</label>
           <input
             value={email}
@@ -65,7 +66,7 @@ export default class Login extends React.Component {
           />
 
           <button type="submit">
-            Sign me up
+            Login
           </button>
         </form>
       </div>

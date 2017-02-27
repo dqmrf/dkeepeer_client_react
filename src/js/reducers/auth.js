@@ -8,7 +8,11 @@ const {
 
   SIGNUP_FAILURE,
 
-  LOGOUT
+  LOGOUT,
+
+  SAVE_PROFILE,
+  SAVE_PROFILE_SUCCESS,
+  FETCH_PROFILE_SUCCESS
 } = Actions;
 
 const initialState = {
@@ -30,7 +34,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         error: null,
-        token: action.token
+        token: action.access_token
       };
     }
 
@@ -44,6 +48,16 @@ export default (state = initialState, action) => {
 
     case LOGOUT: {
       return { ...initialState };
+    }
+
+    case SAVE_PROFILE:
+    case SAVE_PROFILE_SUCCESS:
+    case FETCH_PROFILE_SUCCESS: {
+      return {
+        ...state,
+        profile: { ...state.profile, ...action.user },
+        error: null
+      };
     }
 
     default: {

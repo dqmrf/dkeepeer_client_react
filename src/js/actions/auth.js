@@ -8,7 +8,6 @@ import redirectBackAfter from '../utils/redirectBackAfter';
 // i've changed port for a while, because of rails server can't listening on port 3000
 const baseUrl = 'http://localhost:3001';
 const headers = {'Content-Type': 'application/json'} 
-
 const {
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
@@ -39,7 +38,7 @@ function saveAuthToken(token) {
 export function signup(data, router) {
   return async (dispatch) => {
     try {
-      let url = `${baseUrl}/api/users`;
+      const url = `${baseUrl}/api/users`;
       let body = prepareJson({user: data});
       const res = await axios.post(url, body, { headers: headers });
 
@@ -57,6 +56,38 @@ export function signup(data, router) {
   }
 }
 
+export function login(data, router) {
+  return async (dispatch) => {
+    try {
+      const url = `${baseUrl}/oauth/token?client_id=482a0d9e4933364b5f66527be7416562aa49dfd94bbc2f7649559da4616449de&grant_type=password`;
+      const { email, password } = data;
+      let body = prepareJson({
+        email: email,
+        password: password
+      });
+      const res = await axios.post(url, body, { headers: headers });
+      const { access_token } = res.data;
+
+      if (res && res.status == 200 && access_token) {
+        saveAuthToken(access_token);
+
+        dispatch({ type: LOGIN_SUCCESS, access_token });
+        dispatch({ type: FETCH_PROFILE_SUCCESS, user });
+
+        const { query } = router.state.location;
+        const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/';
+        router.push(redirectTo);
+      }
+    } catch (e) {
+      console.error(e);
+      dispatch({
+        type: LOGIN_FAILURE,
+        error: Error('Unknown error occured :-(. Please, try again later.')
+      });
+    }
+  };
+}
+
 export function fetchProfile() {
   return async (dispatch, getState) => {
     try {
@@ -65,7 +96,7 @@ export function fetchProfile() {
       if (!token) { return; }
 
       const headers = getHeaders(token);
-      const user = (await axios.get(`${baseUrl}/profile`, { headers })).data;
+      const user = (await axios.get(`${baseUrl}/api/profile`, { headers })).data;
       dispatch({ type: FETCH_PROFILE_SUCCESS, user });
     } catch (error) {
       dispatch({ type: FETCH_PROFILE_FAILURE, error });
