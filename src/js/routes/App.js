@@ -1,7 +1,7 @@
 import React, { PropTypes }     from 'react';
 import { connect }              from 'react-redux';
 import { bindActionCreators }   from 'redux';
-import { fetchProfile, logout } from '../actions/auth';
+import { logout } from '../actions/auth';
 
 @connect(state => ({
   auth: state.auth,
@@ -16,12 +16,10 @@ export default class App extends React.Component {
     error: PropTypes.string
   }
 
+  static fillStore(redux) {}
+
   static contextTypes = {
     router: PropTypes.object
-  }
-
-  static fillStore(redux) {
-    return redux.dispatch(fetchProfile());
   }
 
   render() {

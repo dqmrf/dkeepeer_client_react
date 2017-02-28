@@ -25,7 +25,7 @@ const routes = (
     </Route>
 
     <Route path="admin" component={RequireAuth(AdminRoute)} >
-      <IndexRoute component={DashboardRoute} />
+      <IndexRedirect to="dashboard" />
       <Route path="dashboard" component={DashboardRoute} />
     </Route>
 
@@ -37,7 +37,9 @@ function walk(routes, cb) {
   cb(routes);
 
   if (routes.childRoutes) {
-    routes.childRoutes.forEach(route => walk(route, cb));
+    routes.childRoutes.forEach(route => {
+      walk(route, cb)
+    });
   }
 
   return routes;

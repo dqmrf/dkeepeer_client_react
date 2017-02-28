@@ -78,27 +78,10 @@ export function login(data, router) {
         router.push(redirectTo);
       }
     } catch (e) {
-      console.error(e);
       dispatch({
         type: LOGIN_FAILURE,
         error: Error('Unknown error occured :-(. Please, try again later.')
       });
-    }
-  };
-}
-
-export function fetchProfile() {
-  return async (dispatch, getState) => {
-    try {
-      const { auth: { token } } = getState();
-
-      if (!token) { return; }
-
-      const headers = getHeaders(token);
-      const user = (await axios.get(`${baseUrl}/api/profile`, { headers })).data;
-      dispatch({ type: FETCH_PROFILE_SUCCESS, user });
-    } catch (error) {
-      dispatch({ type: FETCH_PROFILE_FAILURE, error });
     }
   };
 }

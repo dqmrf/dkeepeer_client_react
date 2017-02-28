@@ -1,6 +1,5 @@
 import React, { PropTypes }     from 'react';
 import { connect }              from 'react-redux';
-import { bindActionCreators }   from 'redux';
 
 export default class AdminRoute extends React.Component {
   static propTypes = {
@@ -12,10 +11,6 @@ export default class AdminRoute extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        {this.props.children}
-      </div>
-    );
+    return this.props.children;
   }
 }
