@@ -50,15 +50,15 @@ export default (state = initialState, action) => {
       return { ...initialState };
     }
 
-    case SAVE_PROFILE:
-    case SAVE_PROFILE_SUCCESS:
-    case FETCH_PROFILE_SUCCESS: {
-      return {
-        ...state,
-        profile: { ...state.profile, ...action.user },
-        error: null
-      };
-    }
+    // case SAVE_PROFILE:
+    // case SAVE_PROFILE_SUCCESS:
+    // case FETCH_PROFILE_SUCCESS: {
+    //   return {
+    //     ...state,
+    //     profile: { ...state.profile, ...action.user },
+    //     error: null
+    //   };
+    // }
 
     default: {
       return state;

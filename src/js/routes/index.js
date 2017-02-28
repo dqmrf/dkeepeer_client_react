@@ -46,9 +46,6 @@ function walk(routes, cb) {
 export default (store, client) => {
   return walk(Route.createRouteFromReactElement(routes), route => {
     route.onEnter = (nextState, transition) => {
-      const loggedIn = !!store.getState().auth.token;
-      console.log(store.getState().auth);
-
       if (client) {
         fillStore(store, nextState, [route.component]);
       }

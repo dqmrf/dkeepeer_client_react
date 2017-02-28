@@ -72,9 +72,8 @@ export function login(data, router) {
         saveAuthToken(access_token);
 
         dispatch({ type: LOGIN_SUCCESS, access_token });
-        dispatch({ type: FETCH_PROFILE_SUCCESS, user });
 
-        const { query } = router.state.location;
+        const { query } = router.location;
         const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/';
         router.push(redirectTo);
       }
