@@ -6,7 +6,7 @@ import prepareJson       from '../utils/prepareJson';
 import redirectBackAfter from '../utils/redirectBackAfter';
 
 const baseUrl = 'http://localhost:3001';
-const headers = {'Content-Type': 'application/json'} 
+// const headers = {'Content-Type': 'application/json'} 
 
 export function fetchTasks() {
   return async (dispatch, getState) => {
@@ -16,7 +16,9 @@ export function fetchTasks() {
       if (!token) { return; }
 
       const headers = getHeaders(token);
-      // const user = (await axios.get(`${baseUrl}/api/profile`, { headers })).data;
+      const res = (await axios.get(`${baseUrl}/api/tasks`, { headers })).data;
+
+      console.log(res);
       // dispatch({ type: FETCH_PROFILE_SUCCESS, user });
     } catch (error) {
       dispatch({ type: FETCH_PROFILE_FAILURE, error });
