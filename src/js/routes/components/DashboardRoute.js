@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect }          from 'react-redux';
-import Dashboard            from '../components/Admin/Dashboard/Dashboard';
-import { fetchTasks }       from '../actions/tasks';
+import Dashboard            from '../../components/Admin/Dashboard/Dashboard';
+import { fetchTasks }       from '../../actions/tasks';
 
 @connect(state => ({
   tasks: state.tasks.tasks

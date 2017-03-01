@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect }          from 'react-redux';
-import { signup }           from '../actions/auth';
-import Signup               from '../components/Auth/Signup';
+import { signup }           from '../../actions/auth';
+import Signup               from '../../components/Auth/Signup';
 
 @connect(state => ({
   auth: state.auth
