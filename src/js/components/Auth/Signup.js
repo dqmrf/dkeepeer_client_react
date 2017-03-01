@@ -1,10 +1,17 @@
 import React, { PropTypes } from 'react';
+import { connect }          from 'react-redux';
+import { signup }           from '../../actions/auth';
+
+@connect(state => ({
+  auth: state.auth
+}), {
+  signup
+})
 
 export default class Signup extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
-    signup: PropTypes.func.isRequired,
-    handleSubmit: PropTypes.func.isRequired
+    signup: PropTypes.func.isRequired
   }
 
   static contextTypes = {
@@ -29,16 +36,23 @@ export default class Signup extends React.Component {
     } });
   }
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
+    const router = this.context.router;
     const { user } = this.state;
-    this.props.handleSubmit(user);
+    this.props.signup(user, router);
   }
 
   render() {
     const { auth: { error } } = this.props;
     const { user } = this.state;
-    const { email, firstName, lastName, password, passwordConfirmation } = user;
+    const { 
+      email, 
+      firstName, 
+      lastName, 
+      password, 
+      passwordConfirmation 
+    } = user;
 
     return(
       <div>

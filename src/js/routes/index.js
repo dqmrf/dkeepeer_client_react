@@ -1,16 +1,15 @@
 import React            from 'react';
 import { 
-  Route, 
-  IndexRoute, 
-  Redirect, 
+  Route,
+  IndexRoute,
   IndexRedirect }        from 'react-router';
 import App               from './App';
 import RequireAuth       from './RequireAuth';
-import AdminGuard        from './guards/AdminGuard';
-import GuestGuard        from './guards/GuestGuard';
-import SignupRoute       from './components/SignupRoute';
-import LoginRoute        from './components/LoginRoute';
-import DashboardRoute    from './components/DashboardRoute';
+import AdminScope        from './scopes/AdminScope';
+import GuestScope        from './scopes/GuestScope';
+import Signup            from '../components/Auth/Signup';
+import Login             from '../components/Auth/Login';
+import Dashboard         from '../components/Dashboard/Dashboard';
 import fillStore         from '../utils/fillStore';
 import redirectBackAfter from '../utils/redirectBackAfter';
 import NotFound          from '../components/NotFound';
@@ -19,14 +18,14 @@ const routes = (
   <Route path="/" component={App}>
     <IndexRedirect to="admin" />
 
-    <Route component={RequireAuth(GuestGuard, false)} >
-      <Route path="signup" component={SignupRoute} />
-      <Route path="login" component={LoginRoute} />
+    <Route component={RequireAuth(GuestScope, false)}>
+      <Route path="signup" component={Signup} />
+      <Route path="login" component={Login} />
     </Route>
 
-    <Route path="admin" component={RequireAuth(AdminGuard)} >
+    <Route path="admin" component={RequireAuth(AdminScope)}>
       <IndexRedirect to="dashboard" />
-      <Route path="dashboard" component={DashboardRoute} />
+      <Route path="dashboard" component={Dashboard} />
     </Route>
 
     <Route path='*' component={NotFound} />

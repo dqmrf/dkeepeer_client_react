@@ -1,14 +1,31 @@
 import React, { PropTypes } from 'react';
 import { Link }             from 'react-router';
+import { connect }          from 'react-redux';
+import { fetchTasks }       from '../../actions/tasks';
+
+@connect(state => ({
+  tasks: state.tasks.tasks
+}), {
+  fetchTasks
+})
 
 export default class Dashboard extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
-    toggleCompleted: PropTypes.func.isRequired,
+    fetchTasks: PropTypes.func.isRequired
+  }
+
+  static fillStore(redux) {
+    return redux.dispatch(fetchTasks());
   }
 
   toggleCompleted = (id, status) => {
-    this.props.toggleCompleted(id, status);
+    const post = this.props.tasks.find(post => task.id === id);
+
+    this.props.saveTask({
+      ...task,
+      completed: !status
+    });
   }
 
   buildTasks(tasks) {

@@ -1,7 +1,7 @@
-import React, { PropTypes }     from 'react';
-import { connect }              from 'react-redux';
+import React, { PropTypes } from 'react';
+import { connect }          from 'react-redux';
 
-export default class AdminGuard extends React.Component {
+export default class GuestScope extends React.Component {
   static propTypes = {
     children: PropTypes.element.isRequired
   }

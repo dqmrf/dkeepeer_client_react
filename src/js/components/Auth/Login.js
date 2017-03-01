@@ -1,9 +1,17 @@
 import React, { PropTypes } from 'react';
+import { connect }          from 'react-redux';
+import { login }            from '../../actions/auth';
+
+@connect(state => ({
+  auth: state.auth
+}), {
+  login
+})
 
 export default class Login extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
-    handleLogin: PropTypes.func.isRequired
+    login: PropTypes.func.isRequired
   }
 
   static contextTypes = {
@@ -17,18 +25,19 @@ export default class Login extends React.Component {
     }
   }
 
+  handleLogin = (e) => {
+    e.preventDefault();
+    const { user } = this.state;
+    const router = this.context.router;
+    this.props.login(user, router);
+  }
+
   handleChange = field => e => {
     e.preventDefault();
     this.setState({ ['user']: {
       ...this.state.user,
       [field]: e.target.value
     } });
-  }
-
-  handleLogin = e => {
-    e.preventDefault();
-    const { user } = this.state;
-    this.props.handleLogin(user);
   }
 
   render() {
