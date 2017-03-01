@@ -1,22 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect }          from 'react-redux';
 import Dashboard            from '../components/Admin/Dashboard/Dashboard';
-import {
-  fetchTasks,
-  saveTask
-} from '../actions/tasks';
+import { fetchTasks }       from '../actions/tasks';
 
 @connect(state => ({
   tasks: state.tasks.tasks
 }), {
-  fetchTasks,
-  saveTask
+  fetchTasks
 })
 
 export default class DashboardRoute extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
-    saveTask: PropTypes.func.isRequired
+    fetchTasks: PropTypes.func.isRequired
   }
 
   static fillStore(redux) {
@@ -33,15 +29,11 @@ export default class DashboardRoute extends React.Component {
   }
 
   render() {
-    const tasks = this.props.tasks;
-    const activeTasks = this.props.tasks.filter(item => !item.completed);
-    const completedTasks = this.props.tasks.filter(item => item.completed);
+    const { tasks } = this.props;
 
     return (
       <Dashboard
         tasks={tasks}
-        activeTasks={activeTasks}
-        completedTasks={completedTasks}
         toggleCompleted={this.toggleCompleted}
       />
     );

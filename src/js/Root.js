@@ -6,7 +6,6 @@ import routes                from './routes';
 import { routerStateChange } from './actions/router';
 import { createRedux }       from './utils/redux';
 
-// Maybe this constant has to be changed, i don't really know yet...
 const store = createRedux({ 
   auth: { 
     token: cookie.get('token') || ''

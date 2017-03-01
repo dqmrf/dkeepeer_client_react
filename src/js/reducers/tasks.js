@@ -1,21 +1,34 @@
 import Actions from '../constants/actions';
 
 const {
-  FETCH_TASKS_SUCCESS,
-  FETCH_TASK_SUCCESS,
-  SAVE_TASK_SUCCESS
+  FETCH_TASKS,
+  FETCH_TASKS_FULFILLED,
+  FETCH_TASKS_REJECTED
 } = Actions;
 
-export default (state = { tasks: [] }, action) => {
+export default function reducer(state={
+  tasks: [],
+  fetching: false,
+  fetched: false,
+  error: null
+}, action) {
+
   switch (action.type) {
-    case FETCH_TASKS_SUCCESS: {
+    case FETCH_TASKS: {
       return {...state, fetching: true}
     }
 
-    case SAVE_TASK_SUCCESS:
-    case FETCH_TASK_SUCCESS: {
-      // temporary...
-      return {...state, fetching: true};
+    case FETCH_TASKS_FULFILLED: {
+      return {
+        ...state,
+        fetching: false,
+        fetched: true,
+        tasks: action.payload
+      }
+    }
+
+    case FETCH_TASKS_REJECTED: {
+      return {...state, fetching: false, error: action.payload}
     }
 
     default:

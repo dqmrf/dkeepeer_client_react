@@ -5,9 +5,6 @@ import getHeaders        from '../utils/getHeaders.js';
 import prepareJson       from '../utils/prepareJson';
 import redirectBackAfter from '../utils/redirectBackAfter';
 
-// i've changed port for a while, because of rails server can't listening on port 3000
-const baseUrl = 'http://localhost:3001';
-const headers = {'Content-Type': 'application/json'} 
 const {
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
@@ -24,6 +21,9 @@ const {
   SAVE_PROFILE_SUCCESS,
   SAVE_PROFILE_FAILURE
 } = Actions;
+// i've changed port for a while, because of rails server can't listening on port 3000
+const baseUrl = 'http://localhost:3001';
+const headers = {'Content-Type': 'application/json'} 
 
 function saveAuthToken(token) {
   const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
