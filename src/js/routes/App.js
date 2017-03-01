@@ -1,6 +1,7 @@
 import React, { PropTypes }     from 'react';
 import { connect }              from 'react-redux';
 import { bindActionCreators }   from 'redux';
+import Header                   from '../components/Layout/Header/Header';
 import { logout }               from '../actions/auth';
 
 @connect(state => ({
@@ -27,6 +28,12 @@ export default class App extends React.Component {
 
     return (
       <div>
+        <Header
+          loggedIn={!!auth.token}
+          router={this.context.router}
+          {...bindActionCreators({ logout }, dispatch)}
+        />
+        
         {this.props.children}
       </div>
     );

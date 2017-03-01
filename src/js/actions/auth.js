@@ -12,14 +12,7 @@ const {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
 
-  LOGOUT,
-
-  FETCH_PROFILE_SUCCESS,
-  FETCH_PROFILE_FAILURE,
-
-  SAVE_PROFILE,
-  SAVE_PROFILE_SUCCESS,
-  SAVE_PROFILE_FAILURE
+  LOGOUT
 } = Actions;
 // i've changed port for a while, because of rails server can't listening on port 3000
 const baseUrl = 'http://localhost:3001';
@@ -83,5 +76,13 @@ export function login(data, router) {
         error: Error('Unknown error occured :-(. Please, try again later.')
       });
     }
+  };
+}
+
+export function logout(router) {
+  return dispatch => {
+    cookie.unset('token');
+    dispatch({ type: LOGOUT });
+    router.push(...redirectBackAfter('/login', router.location));
   };
 }
