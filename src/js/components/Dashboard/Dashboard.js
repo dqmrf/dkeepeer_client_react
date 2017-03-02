@@ -31,7 +31,11 @@ export default class Dashboard extends React.Component {
   buildTasks(tasks) {
     return tasks.map((task, i) => {
       return (
-        <li key={i}>{task.title}</li>
+        <li key={i}>
+          <Link to={`/admin/task/${task.id}`}>
+            {task.title}
+          </Link>
+        </li>
       );
     });
   }

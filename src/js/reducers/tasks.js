@@ -3,10 +3,14 @@ import Actions from '../constants/actions';
 const {
   FETCH_TASKS,
   FETCH_TASKS_FULFILLED,
-  FETCH_TASKS_REJECTED
+  FETCH_TASKS_REJECTED,
+
+  FETCH_TASK_FULFILLED,
+  FETCH_TASK_REJECTED
 } = Actions;
 
 export default function reducer(state={
+  task: {},
   tasks: [],
   fetching: false,
   fetched: false,
@@ -31,7 +35,21 @@ export default function reducer(state={
       return {...state, fetching: false, error: action.payload}
     }
 
-    default:
+    case FETCH_TASK_FULFILLED: {
+      return {
+        ...state,
+        fetching: false,
+        fetched: true,
+        task: action.payload
+      }
+    }
+
+    case FETCH_TASK_REJECTED: {
+      return {...state, fetching: false, error: action.payload}
+    }
+
+    default: {
       return state;
+    }
   }
 }

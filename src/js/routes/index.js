@@ -1,4 +1,4 @@
-import React            from 'react';
+import React             from 'react';
 import { 
   Route,
   IndexRoute,
@@ -10,6 +10,7 @@ import GuestScope        from './scopes/GuestScope';
 import Signup            from '../components/Auth/Signup';
 import Login             from '../components/Auth/Login';
 import Dashboard         from '../components/Dashboard/Dashboard';
+import SingleTask        from '../components/Tasks/SingleTask';
 import fillStore         from '../utils/fillStore';
 import redirectBackAfter from '../utils/redirectBackAfter';
 import NotFound          from '../components/NotFound';
@@ -26,6 +27,7 @@ const routes = (
     <Route path="admin" component={RequireAuth(AdminScope)}>
       <IndexRedirect to="dashboard" />
       <Route path="dashboard" component={Dashboard} />
+      <Route path="task/:id" component={SingleTask} />
     </Route>
 
     <Route path='*' component={NotFound} />
