@@ -59,6 +59,8 @@ export function fetchTask(id) {
   };
 }
 
+export function createTask(task) {}
+
 export function updateTask(id, task) {
   return async (dispatch, getState) => {
     try {

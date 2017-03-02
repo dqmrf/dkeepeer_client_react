@@ -1,18 +1,21 @@
-import React, { PropTypes } from 'react';
-import { Link }             from 'react-router';
-import { connect }          from 'react-redux';
-import { fetchTasks }       from '../../actions/tasks';
+import React, { PropTypes }       from 'react';
+import { Link }                   from 'react-router';
+import { connect }                from 'react-redux';
+import { TaskForm }               from './TaskForm';
+import { fetchTasks, createTask } from '../../actions/tasks';
 
 @connect(state => ({
   tasks: state.tasks.tasks
 }), {
-  fetchTasks
+  fetchTasks,
+  createTask
 })
 
 export default class Dashboard extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
-    fetchTasks: PropTypes.func.isRequired
+    fetchTasks: PropTypes.func.isRequired,
+    createTask: PropTypes.func.isRequired
   }
 
   static fillStore(redux) {
@@ -20,12 +23,16 @@ export default class Dashboard extends React.Component {
   }
 
   toggleCompleted = (id, status) => {
-    const post = this.props.tasks.find(post => task.id === id);
+    const task = this.props.tasks.find(task => task.id === id);
 
     this.props.saveTask({
       ...task,
       completed: !status
     });
+  }
+
+  handleSave = (task) => {
+    this.props.createTask(task);
   }
 
   buildTasks(tasks) {
@@ -51,17 +58,25 @@ export default class Dashboard extends React.Component {
 
     return(
       <div>
-        <h2>Tasks List</h2>
 
         <div>
-          <h4>Active tasks</h4>
-          <ul>{activeTasks}</ul>
+          <h2>Tasks List</h2>
+
+          <div>
+            <h4>Active tasks</h4>
+            <ul>{activeTasks}</ul>
+          </div>
+
+          <div>
+            <h4>Completed tasks</h4>
+            <ul>{completedTasks}</ul>
+          </div>
         </div>
 
         <div>
-          <h4>Completed tasks</h4>
-          <ul>{completedTasks}</ul>
+          <TaskForm onSave={this.handleSave.bind(this)} />
         </div>
+
       </div>
     );
   }
