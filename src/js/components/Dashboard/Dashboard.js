@@ -35,6 +35,10 @@ export default class Dashboard extends React.Component {
           <Link to={`/admin/task/${task.id}`}>
             {task.title}
           </Link>
+          &nbsp;|&nbsp;
+          <Link to={`/admin/task/${task.id}/edit`}>
+            edit
+          </Link>
         </li>
       );
     });

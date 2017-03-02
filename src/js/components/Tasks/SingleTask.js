@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect }          from 'react-redux';
+import { Link }             from 'react-router';
 import { fetchTask }        from '../../actions/tasks';
 
 @connect(state => ({
@@ -14,7 +15,9 @@ export default class SingleTask extends React.Component {
   }
 
   static fillStore(redux, props) {
-    return redux.dispatch(fetchTask(props.params.id));
+    if (props.params.id) {
+      return redux.dispatch(fetchTask(props.params.id));
+    }
   }
 
   render() {
@@ -29,6 +32,11 @@ export default class SingleTask extends React.Component {
         <div>{title}</div>
         <p>{description}</p>
         <small>written by {user_id}</small>
+        <div>
+          <Link to={`/admin/task/${task.id}/edit`}>
+            Edit task
+          </Link>
+        </div>
       </div>
     );
   }

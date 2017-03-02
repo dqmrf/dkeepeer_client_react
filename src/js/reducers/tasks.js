@@ -6,7 +6,12 @@ const {
   FETCH_TASKS_REJECTED,
 
   FETCH_TASK_FULFILLED,
-  FETCH_TASK_REJECTED
+  FETCH_TASK_REJECTED,
+
+  // this actions don't exist yet.
+  UPDATE_TASK_FULFILLED,
+  UPDATE_TASK_REJECTED
+  // ...
 } = Actions;
 
 export default function reducer(state={

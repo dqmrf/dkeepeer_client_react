@@ -18,5 +18,8 @@ export default keyMirror({
   FETCH_TASKS_REJECTED: null,
 
   FETCH_TASK_FULFILLED: null,
-  FETCH_TASK_REJECTED: null
+  FETCH_TASK_REJECTED: null,
+
+  UPDATE_TASK_FULFILLED: null,
+  UPDATE_TASK_REJECTED: null,
 });

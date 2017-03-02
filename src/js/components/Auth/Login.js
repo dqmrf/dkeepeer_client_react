@@ -7,7 +7,6 @@ import { login }            from '../../actions/auth';
 }), {
   login
 })
-
 export default class Login extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,

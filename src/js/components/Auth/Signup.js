@@ -7,7 +7,6 @@ import { signup }           from '../../actions/auth';
 }), {
   signup
 })
-
 export default class Signup extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
