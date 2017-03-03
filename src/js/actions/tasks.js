@@ -16,7 +16,10 @@ const {
   CREATE_TASK_REJECTED,
 
   UPDATE_TASK_FULFILLED,
-  UPDATE_TASK_REJECTED
+  UPDATE_TASK_REJECTED,
+
+  DESTROY_TASK_FULFILLED,
+  DESTROY_TASK_REJECTED
 } = Actions;
 
 const baseUrl = 'http://localhost:3001';
@@ -105,6 +108,29 @@ export function updateTask(id, task) {
       dispatch({ type: UPDATE_TASK_FULFILLED, data });
     } catch (error) {
       dispatch({ type: UPDATE_TASK_REJECTED, error });
+    }
+  }
+}
+
+export function destroyTask(id) {
+  return async (dispatch, getState) => {
+    try {
+      const { auth: { token } } = getState();
+
+      if (!token) { return; }
+
+      let headers = getHeaders(token);
+
+      headers['Content-Type'] = 'application/json';
+
+      const res = await axios.delete(`${baseUrl}/api/tasks/${id}`, { headers: headers });
+
+      if (res.status == 200) {
+        const { id } = res.data;
+        dispatch({type: DESTROY_TASK_FULFILLED, payload: id})
+      }
+    } catch (error) {
+      dispatch({ type: DESTROY_TASK_REJECTED, error });
     }
   }
 }

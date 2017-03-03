@@ -24,5 +24,8 @@ export default keyMirror({
   CREATE_TASK_REJECTED: null,
 
   UPDATE_TASK_FULFILLED: null,
-  UPDATE_TASK_REJECTED: null
+  UPDATE_TASK_REJECTED: null,
+
+  DESTROY_TASK_FULFILLED: null,
+  DESTROY_TASK_REJECTED: null
 });

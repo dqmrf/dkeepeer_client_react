@@ -13,8 +13,11 @@ const {
 
   // this actions don't exist yet.
   UPDATE_TASK_FULFILLED,
-  UPDATE_TASK_REJECTED
+  UPDATE_TASK_REJECTED,
   // ...
+
+  DESTROY_TASK_FULFILLED,
+  DESTROY_TASK_REJECTED
 } = Actions;
 
 export default function reducer(state={
@@ -64,6 +67,18 @@ export default function reducer(state={
     }
 
     case CREATE_TASK_REJECTED: {
+      return {...state, fetching: false, error: action.payload}
+    }
+
+    case DESTROY_TASK_FULFILLED: {
+      console.log(action.payload);
+      return {
+        ...state,
+        tasks: state.tasks.filter(t => t.id !== action.payload),
+      }
+    }
+
+    case DESTROY_TASK_REJECTED: {
       return {...state, fetching: false, error: action.payload}
     }
 

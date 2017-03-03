@@ -1,21 +1,26 @@
-import React, { PropTypes }       from 'react';
-import { Link }                   from 'react-router';
-import { connect }                from 'react-redux';
-import TaskForm                   from './TaskForm';
-import { fetchTasks, createTask } from '../../actions/tasks';
+import React, { PropTypes } from 'react';
+import { Link }             from 'react-router';
+import { connect }          from 'react-redux';
+import TaskForm             from './TaskForm';
+import { 
+  fetchTasks, 
+  createTask, 
+  destroyTask }             from '../../actions/tasks';
 
 @connect(state => ({
   tasks: state.tasks.tasks
 }), {
   fetchTasks,
-  createTask
+  createTask,
+  destroyTask
 })
 
 export default class Dashboard extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
     fetchTasks: PropTypes.func.isRequired,
-    createTask: PropTypes.func.isRequired
+    createTask: PropTypes.func.isRequired,
+    destroyTask: PropTypes.func.isRequired
   }
 
   state = {
@@ -45,6 +50,10 @@ export default class Dashboard extends React.Component {
     this.props.createTask(task);
   }
 
+  handleDestroy = (id) => {
+    this.props.destroyTask(id);
+  }
+
   buildTasks(tasks) {
     return tasks.map((task, i) => {
       return (
@@ -52,10 +61,15 @@ export default class Dashboard extends React.Component {
           <Link to={`/admin/task/${task.id}`}>
             {task.title}
           </Link>
-          &nbsp;|&nbsp;
-          <Link to={`/admin/task/${task.id}/edit`}>
-            edit
-          </Link>
+          <div>
+            <Link to={`/admin/task/${task.id}/edit`}>
+              Edit
+            </Link>
+            &nbsp;|&nbsp;
+            <button onClick={this.handleDestroy.bind(this, task.id)}>
+              Destroy
+            </button>
+          </div>
         </li>
       );
     });
