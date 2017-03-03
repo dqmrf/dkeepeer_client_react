@@ -1,3 +1,6 @@
+import '../../styles/global.styl';
+import styles               from './styles.styl';
+import CSSModules           from 'react-css-modules';
 import React, { PropTypes } from 'react';
 import { Link }             from 'react-router';
 import { connect }          from 'react-redux';
@@ -14,7 +17,7 @@ import {
   createTask,
   destroyTask
 })
-
+@CSSModules(styles)
 export default class Dashboard extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
