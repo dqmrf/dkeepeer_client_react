@@ -12,6 +12,7 @@ export default class NavItem extends React.Component {
 
   render() {
     const { active, ...props } = this.props;
+
     return (
       <li className={classNames({ active })}>
         <Link {...props} activeClassName="" />

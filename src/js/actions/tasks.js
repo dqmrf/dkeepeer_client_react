@@ -84,7 +84,6 @@ export function createTask(task) {
         dispatch({type: CREATE_TASK_FULFILLED, payload: data})
       }
     } catch (error) {
-      console.log(error);
       dispatch({ type: CREATE_TASK_REJECTED, error });
     }
   }
@@ -103,9 +102,10 @@ export function updateTask(id, task) {
       headers['Content-Type'] = 'application/json';
 
       const res = await axios.put(`${baseUrl}/api/tasks/${id}`, body, { headers: headers });
-      const { data } = res;
 
-      dispatch({ type: UPDATE_TASK_FULFILLED, data });
+      if (res.status == 200) {
+        dispatch({ type: UPDATE_TASK_FULFILLED, payload: task });
+      }
     } catch (error) {
       dispatch({ type: UPDATE_TASK_REJECTED, error });
     }

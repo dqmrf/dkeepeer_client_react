@@ -8,7 +8,6 @@ import { logout }               from '../actions/auth';
   auth: state.auth,
   router: state.router
 }))
-
 export default class App extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
@@ -34,7 +33,9 @@ export default class App extends React.Component {
           {...bindActionCreators({ logout }, dispatch)}
         />
         
-        {this.props.children}
+        <div className="container">
+          {this.props.children}
+        </div>
       </div>
     );
   }

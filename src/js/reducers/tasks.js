@@ -11,10 +11,8 @@ const {
   CREATE_TASK_FULFILLED,
   CREATE_TASK_REJECTED,
 
-  // this actions don't exist yet.
   UPDATE_TASK_FULFILLED,
   UPDATE_TASK_REJECTED,
-  // ...
 
   DESTROY_TASK_FULFILLED,
   DESTROY_TASK_REJECTED
@@ -42,10 +40,6 @@ export default function reducer(state={
       }
     }
 
-    case FETCH_TASKS_REJECTED: {
-      return {...state, fetching: false, error: action.payload}
-    }
-
     case FETCH_TASK_FULFILLED: {
       return {
         ...state,
@@ -55,10 +49,6 @@ export default function reducer(state={
       }
     }
 
-    case FETCH_TASK_REJECTED: {
-      return {...state, fetching: false, error: action.payload}
-    }
-
     case CREATE_TASK_FULFILLED: {
       return {
         ...state,
@@ -66,18 +56,29 @@ export default function reducer(state={
       }
     }
 
-    case CREATE_TASK_REJECTED: {
-      return {...state, fetching: false, error: action.payload}
+    case UPDATE_TASK_FULFILLED: {
+      const { id } = action.payload;
+      const newTasks = [...state.tasks];
+      const tasksToUpdate = newTasks.findIndex(t => t.id === id);
+      newTasks[tasksToUpdate] = action.payload;
+
+      return {
+        ...state,
+        tasks: newTasks,
+      }
     }
 
     case DESTROY_TASK_FULFILLED: {
-      console.log(action.payload);
       return {
         ...state,
         tasks: state.tasks.filter(t => t.id !== action.payload),
       }
     }
 
+    case FETCH_TASK_REJECTED:
+    case FETCH_TASKS_REJECTED:
+    case CREATE_TASK_REJECTED:
+    case UPDATE_TASK_REJECTED:
     case DESTROY_TASK_REJECTED: {
       return {...state, fetching: false, error: action.payload}
     }

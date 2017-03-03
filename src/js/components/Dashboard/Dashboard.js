@@ -8,6 +8,7 @@ import TaskForm             from './TaskForm';
 import { 
   fetchTasks, 
   createTask, 
+  updateTask,
   destroyTask }             from '../../actions/tasks';
 
 @connect(state => ({
@@ -15,6 +16,7 @@ import {
 }), {
   fetchTasks,
   createTask,
+  updateTask,
   destroyTask
 })
 @CSSModules(styles)
@@ -42,8 +44,7 @@ export default class Dashboard extends React.Component {
 
   toggleCompleted = (id, status) => {
     const task = this.props.tasks.find(task => task.id === id);
-
-    this.props.saveTask({
+    this.props.updateTask(id, {
       ...task,
       completed: !status
     });
@@ -57,7 +58,7 @@ export default class Dashboard extends React.Component {
     this.props.destroyTask(id);
   }
 
-  buildTasks(tasks) {
+  buildTasksList(tasks) {
     return tasks.map((task, i) => {
       return (
         <li key={i}>
@@ -69,6 +70,10 @@ export default class Dashboard extends React.Component {
               Edit
             </Link>
             &nbsp;|&nbsp;
+            <button onClick={this.toggleCompleted.bind(this, task.id, task.completed)}>
+              {task.completed ? 'Mark active' : 'Mark done'}
+            </button>
+            &nbsp;|&nbsp;
             <button onClick={this.handleDestroy.bind(this, task.id)}>
               Destroy
             </button>
@@ -78,26 +83,37 @@ export default class Dashboard extends React.Component {
     });
   }
 
+  buildTasksContainer(tasks, isActive) {
+    if (!tasks || !tasks.length) return false;
+
+    let taskLists = this.buildTasksList(tasks);
+
+    return(
+      <div>
+        <h4>{isActive ? 'Active tasks' : 'Completed tasks'}</h4>
+        <ul>{taskLists}</ul>
+      </div>
+    );
+  }
+
   render() {
-    const { tasks } = this.props;
     const { task } = this.state;
-    const activeTasks = this.buildTasks(tasks.filter(t => !t.completed))
-    const completedTasks = this.buildTasks(tasks.filter(t => t.completed))
+    const { tasks } = this.props;
+
+    const activeTasks = tasks.filter(t => !t.completed);
+    const completedTasks = tasks.filter(t => t.completed);
+
+    let activeTasksContainer = this.buildTasksContainer(activeTasks, true);
+    let completedTasksContainer = this.buildTasksContainer(completedTasks, false);
 
     return(
       <div>
 
         <div>
           <h2>Tasks List</h2>
-
           <div>
-            <h4>Active tasks</h4>
-            <ul>{activeTasks}</ul>
-          </div>
-
-          <div>
-            <h4>Completed tasks</h4>
-            <ul>{completedTasks}</ul>
+            {activeTasksContainer}
+            {completedTasksContainer}
           </div>
         </div>
 
