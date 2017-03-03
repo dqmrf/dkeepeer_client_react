@@ -8,6 +8,9 @@ const {
   FETCH_TASK_FULFILLED,
   FETCH_TASK_REJECTED,
 
+  CREATE_TASK_FULFILLED,
+  CREATE_TASK_REJECTED,
+
   // this actions don't exist yet.
   UPDATE_TASK_FULFILLED,
   UPDATE_TASK_REJECTED
@@ -50,6 +53,17 @@ export default function reducer(state={
     }
 
     case FETCH_TASK_REJECTED: {
+      return {...state, fetching: false, error: action.payload}
+    }
+
+    case CREATE_TASK_FULFILLED: {
+      return {
+        ...state,
+        tasks: [...state.tasks, action.payload],
+      }
+    }
+
+    case CREATE_TASK_REJECTED: {
       return {...state, fetching: false, error: action.payload}
     }
 

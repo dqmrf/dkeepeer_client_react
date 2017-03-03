@@ -1,7 +1,7 @@
 import React, { PropTypes }       from 'react';
 import { Link }                   from 'react-router';
 import { connect }                from 'react-redux';
-import { TaskForm }               from './TaskForm';
+import TaskForm                   from './TaskForm';
 import { fetchTasks, createTask } from '../../actions/tasks';
 
 @connect(state => ({
@@ -16,6 +16,16 @@ export default class Dashboard extends React.Component {
     tasks: PropTypes.array.isRequired,
     fetchTasks: PropTypes.func.isRequired,
     createTask: PropTypes.func.isRequired
+  }
+
+  state = {
+    task: {
+      title: '',
+      description: '',
+      priority: '',
+      due_date: '',
+      completed: false
+    }
   }
 
   static fillStore(redux) {
@@ -53,8 +63,9 @@ export default class Dashboard extends React.Component {
 
   render() {
     const { tasks } = this.props;
-    const activeTasks = this.buildTasks(tasks.filter(task => !task.completed))
-    const completedTasks = this.buildTasks(tasks.filter(task => task.completed))
+    const { task } = this.state;
+    const activeTasks = this.buildTasks(tasks.filter(t => !t.completed))
+    const completedTasks = this.buildTasks(tasks.filter(t => t.completed))
 
     return(
       <div>
@@ -73,9 +84,10 @@ export default class Dashboard extends React.Component {
           </div>
         </div>
 
-        <div>
-          <TaskForm onSave={this.handleSave.bind(this)} />
-        </div>
+        <TaskForm
+          task={task}
+          onSave={this.handleSave}
+        />
 
       </div>
     );

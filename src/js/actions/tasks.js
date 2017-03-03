@@ -12,6 +12,9 @@ const {
   FETCH_TASK_FULFILLED,
   FETCH_TASK_REJECTED,
 
+  CREATE_TASK_FULFILLED,
+  CREATE_TASK_REJECTED,
+
   UPDATE_TASK_FULFILLED,
   UPDATE_TASK_REJECTED
 } = Actions;
@@ -59,7 +62,30 @@ export function fetchTask(id) {
   };
 }
 
-export function createTask(task) {}
+export function createTask(task) {
+  return async (dispatch, getState) => {
+    try {
+      const { auth: { token } } = getState();
+
+      if (!token) { return; }
+
+      const body = prepareJson({task: task});
+      let headers = getHeaders(token);
+
+      headers['Content-Type'] = 'application/json';
+
+      const res = await axios.post(`${baseUrl}/api/tasks`, body, { headers: headers });
+
+      if (res.status == 200) {
+        const { data } = res;
+        dispatch({type: CREATE_TASK_FULFILLED, payload: data})
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: CREATE_TASK_REJECTED, error });
+    }
+  }
+}
 
 export function updateTask(id, task) {
   return async (dispatch, getState) => {

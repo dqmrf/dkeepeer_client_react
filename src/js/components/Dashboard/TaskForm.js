@@ -2,22 +2,26 @@ import React, { PropTypes } from 'react';
 
 export default class TaskForm extends React.Component {
   static propTypes = {
+    task: PropTypes.object,
     onSave: PropTypes.func.isRequired
   }
 
   state = {
-    task: {
-      title: '',
-      description: '',
-      priority: '',
-      due_date: '',
-      completed: false
-    }
+    task: { ...this.props.task }
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      task: {
+        ...newProps.task
+      }
+    });
   }
 
   handleSave = (e) => {
     e.preventDefault();
-    this.props.onSave(this.state.task);
+    const { task } = this.state;
+    this.props.onSave(task);
   }
 
   handleChange = field => e => {
