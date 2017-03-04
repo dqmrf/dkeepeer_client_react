@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Link }             from 'react-router';
 import NavItem              from './NavItem';
 
 export default class Header extends React.Component {
@@ -24,10 +23,28 @@ export default class Header extends React.Component {
     this.setState({collapsed});
   }
 
-  renderNavBar() {
-    const { loggedIn, router } = this.props;
+  createNavItems(navItems) {
+    if (!navItems) return;
+
+    const { router } = this.props;
     const isActive = router.isActive.bind(router);
+
+    return navItems.map((props) =>
+      <NavItem
+        key={props.to}
+        to={props.to}
+        active={isActive(props.to)}
+        onClick={props.onClick}
+      >
+        {props.title}
+      </NavItem>
+    );
+  }
+
+  renderNavBar() {
+    const { loggedIn } = this.props;
     let navItems;
+    let navItemsRight;
 
     if (loggedIn) {
       navItems = [
@@ -35,13 +52,16 @@ export default class Header extends React.Component {
           to: '/admin/dashboard', 
           title: 'Dashboard', 
           onClick: this.toggleCollapse.bind(this) 
-        },
-        { to: '/logout', 
+        }
+      ];
+      navItemsRight = [
+        {
+          to: '/logout', 
           title: 'Logout', 
-          onClick: (e) => { 
+          onClick: (e) => {
             this.handleLogout(e); 
             this.toggleCollapse.call(this); 
-          } 
+          }
         }
       ];
     } else {
@@ -58,21 +78,20 @@ export default class Header extends React.Component {
       ];
     }
 
-    navItems = navItems.map((props) =>
-      <NavItem
-        key={props.to}
-        to={props.to}
-        active={isActive(props.to)}
-        onClick={props.onClick}
-      >
-        {props.title}
-      </NavItem>
-    );
+    navItems = this.createNavItems(navItems);
+    navItemsRight = this.createNavItems(navItemsRight);
 
     return (
-      <ul className="nav navbar-nav">
-        {navItems}
-      </ul>
+      <nav>
+        <ul className="nav navbar-nav">
+          {navItems}
+        </ul>
+        {navItemsRight ? 
+          <ul className="nav navbar-nav navbar-right">
+            {navItemsRight}
+          </ul> : null
+        }
+      </nav>
     );
   }
 

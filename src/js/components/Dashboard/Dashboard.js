@@ -1,10 +1,9 @@
-import '../../styles/global.styl';
 import styles               from './styles.styl';
 import CSSModules           from 'react-css-modules';
 import React, { PropTypes } from 'react';
-import { Link }             from 'react-router';
 import { connect }          from 'react-redux';
-import TaskForm             from './TaskForm';
+import TaskForm             from '../Tasks/TaskForm';
+import TasksContainer       from '../Tasks/TasksContainer';
 import { 
   fetchTasks, 
   createTask, 
@@ -58,44 +57,6 @@ export default class Dashboard extends React.Component {
     this.props.destroyTask(id);
   }
 
-  buildTasksList(tasks) {
-    return tasks.map((task, i) => {
-      return (
-        <li key={i}>
-          <Link to={`/admin/task/${task.id}`}>
-            {task.title}
-          </Link>
-          <div>
-            <Link to={`/admin/task/${task.id}/edit`}>
-              Edit
-            </Link>
-            &nbsp;|&nbsp;
-            <button onClick={this.toggleCompleted.bind(this, task.id, task.completed)}>
-              {task.completed ? 'Mark active' : 'Mark done'}
-            </button>
-            &nbsp;|&nbsp;
-            <button onClick={this.handleDestroy.bind(this, task.id)}>
-              Destroy
-            </button>
-          </div>
-        </li>
-      );
-    });
-  }
-
-  buildTasksContainer(tasks, isActive) {
-    if (!tasks || !tasks.length) return false;
-
-    let taskLists = this.buildTasksList(tasks);
-
-    return(
-      <div>
-        <h4>{isActive ? 'Active tasks' : 'Completed tasks'}</h4>
-        <ul>{taskLists}</ul>
-      </div>
-    );
-  }
-
   render() {
     const { task } = this.state;
     const { tasks } = this.props;
@@ -103,24 +64,34 @@ export default class Dashboard extends React.Component {
     const activeTasks = tasks.filter(t => !t.completed);
     const completedTasks = tasks.filter(t => t.completed);
 
-    let activeTasksContainer = this.buildTasksContainer(activeTasks, true);
-    let completedTasksContainer = this.buildTasksContainer(completedTasks, false);
-
     return(
       <div>
 
-        <div>
+        <div className="col-md-8">
           <h2>Tasks List</h2>
+
           <div>
-            {activeTasksContainer}
-            {completedTasksContainer}
+            <TasksContainer
+              tasks={activeTasks}
+              isActive={true}
+              toggleCompleted={this.toggleCompleted.bind(this)}
+              handleDestroy={this.handleDestroy.bind(this)}
+            />
+            <TasksContainer
+              tasks={completedTasks}
+              isActive={false}
+              toggleCompleted={this.toggleCompleted.bind(this)}
+              handleDestroy={this.handleDestroy.bind(this)}
+            />
           </div>
         </div>
 
-        <TaskForm
-          task={task}
-          onSave={this.handleSave}
-        />
+        <div className="col-md-4">
+          <TaskForm
+            task={task}
+            onSave={this.handleSave}
+          />
+        </div>
 
       </div>
     );

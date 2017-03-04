@@ -54,68 +54,97 @@ export default class Signup extends React.Component {
     } = user;
 
     return(
-      <div>
-        <h2>Sign up</h2>
+      <div className="row">
+        <div className="col-md-6 col-md-offset-3">
 
-        {error
-          ? <div>{error.message}</div>
-          : null}
+          <h2>Sign up</h2>
 
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor="email">Email</label>
-          <input
-            value={email}
-            onChange={this.handleChange('email')}
-            id="email"
-            type="email"
-            placeholder="Email"
-            required
-          />
+          {error
+            ? <div>{error.message}</div>
+            : null}
 
-          <label htmlFor="firstName">First name</label>
-          <input
-            value={firstName}
-            onChange={this.handleChange('firstName')}
-            id="firstName"
-            type="text"
-            placeholder="First name"
-            required
-          />
+          <form onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="inputEmail" className="control-label">
+                Email
+              </label>
+              <input
+                className="form-control"
+                id="inputEmail"
+                onChange={this.handleChange('email')}
+                placeholder="Email"
+                type="email"
+                value={email}
+                required
+              />
+            </div>
 
-          <label htmlFor="lastName">Last name</label>
-          <input
-            value={lastName}
-            onChange={this.handleChange('lastName')}
-            id="lastName"
-            type="text"
-            placeholder="Last name"
-            required
-          />
+            <div className="form-group">
+              <label htmlFor="inputFirstName" className="control-label">
+                First name
+              </label>
+              <input
+                className="form-control"
+                id="inputFirstName"
+                onChange={this.handleChange('firstName')}
+                placeholder="First name"
+                type="text"
+                value={firstName}
+                required
+              />
+            </div>
 
-          <label htmlFor="password">Password</label>
-          <input
-            value={password}
-            onChange={this.handleChange('password')}
-            id="password"
-            type="password"
-            placeholder="Password"
-            required
-          />
+            <div className="form-group">
+              <label htmlFor="inputLastName" className="control-label">
+                Last name
+              </label>
+              <input
+                className="form-control"
+                id="inputLastName"
+                onChange={this.handleChange('lastName')}
+                placeholder="Last name"
+                type="text"
+                value={lastName}
+                required
+              />
+            </div>
 
-          <label htmlFor="passwordConfirmation">Password confirmation</label>
-          <input
-            value={passwordConfirmation}
-            onChange={this.handleChange('passwordConfirmation')}
-            id="passwordConfirmation"
-            type="password"
-            placeholder="Password confirmation"
-            required
-          />
+            <div className="form-group">
+              <label htmlFor="inputPassword" className="control-label">
+                Password
+              </label>
+              <input
+                className="form-control"
+                id="inputPassword"
+                onChange={this.handleChange('password')}
+                placeholder="Password"
+                type="password"
+                value={password}
+                required
+              />
+            </div>
 
-          <button type="submit">
-            Sign me up
-          </button>
-        </form>
+            <div className="form-group">
+              <label htmlFor="inputPasswordConfirmation" className="control-label">
+                Password confirmation
+              </label>
+              <input
+                className="form-control"
+                id="inputPasswordConfirmation"
+                onChange={this.handleChange('passwordConfirmation')}
+                placeholder="Password confirmation"
+                type="password"
+                value={passwordConfirmation}
+                required
+              />
+            </div>
+
+            <button type="submit" className="btn btn-success">
+              Sign me up
+            </button>
+          </form>
+          
+        </div>
       </div>
     );
   }

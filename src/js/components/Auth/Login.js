@@ -45,38 +45,51 @@ export default class Login extends React.Component {
     const { email, password } = user;
 
     return(
-      <div>
-        <h2>Login</h2>
+      <div className="row">
+        <div className="col-md-6 col-md-offset-3">
 
-        {error
-          ? <div>{error.message}</div>
-          : null}
+          <h2>Login</h2>
 
-        <form onSubmit={this.handleLogin}>
-          <label htmlFor="email">Email</label>
-          <input
-            value={email}
-            onChange={this.handleChange('email')}
-            id="email"
-            type="email"
-            placeholder="Email"
-            required
-          />
+          {error
+            ? <div>{error.message}</div>
+            : null}
 
-          <label htmlFor="password">Password</label>
-          <input
-            value={password}
-            onChange={this.handleChange('password')}
-            id="password"
-            type="password"
-            placeholder="Password"
-            required
-          />
+          <form onSubmit={this.handleLogin}>
+            <div className="form-group">
+              <label htmlFor="inputEmail" className="control-label">
+                Email
+              </label>
+              <input
+                className="form-control"
+                id="inputEmail"
+                onChange={this.handleChange('email')}
+                placeholder="Email"
+                type="email"
+                value={email}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="inputPassword" className="control-label">
+                Password
+              </label>
+              <input
+                className="form-control"
+                id="inputPassword"
+                onChange={this.handleChange('password')}
+                placeholder="Password"
+                type="password"
+                value={password}
+                required
+              />
+            </div>
 
-          <button type="submit">
-            Login
-          </button>
-        </form>
+            <button type="submit" className="btn btn-success">
+              Sign in
+            </button>
+          </form>
+        </div>
       </div>
     );
   }

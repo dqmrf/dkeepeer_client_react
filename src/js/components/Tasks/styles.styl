@@ -1,0 +1,30 @@
+@import '../../styles/global.styl';
+
+.list-group
+  &.tasks-list
+    .list-group-item
+      display flex
+      align-items center
+      justify-content space-between
+      
+      .actions
+        display flex
+        align-items center
+        justify-content space-between
+        
+        &.left_actions
+          label
+            margin 0
+            padding-right 10px
+            
+        &.animated
+          visibility hidden
+          
+      &:hover
+        .actions
+          &.animated
+            visibility visible
+            
+    .alert
+      width 100%
+      margin 10px 0

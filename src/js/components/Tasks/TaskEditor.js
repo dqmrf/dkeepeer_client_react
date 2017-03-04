@@ -62,42 +62,77 @@ export default class TaskEditor extends React.Component {
   }
 
   render() {
-    // const { params: { id } } = this.props;
     const { title, description, priority, due_date } = this.state.task;
 
     return (
-      <div>
-        <input
-          value={title}
-          onChange={this.handleChange('title')}
-          type="text"
-          placeholder="Title"
-        />
+      <div className="row">
+        <div className="col-md-6 col-md-offset-3">
+          <form onSubmit={this.handleSave}>
+            <div className="form-group">
+              <label htmlFor="inputTitle" className="control-label">
+                Title
+              </label>
+              <input
+                className="form-control"
+                id="inputTitle"
+                onChange={this.handleChange('title')}
+                placeholder="Title"
+                type="text"
+                value={title}
+                required
+              />
+            </div>
 
-        <textarea
-          onChange={this.handleChange('description')}
-          value={description}
-          placeholder="Description goes here"
-          rows="7"
-        />
+            <div className="form-group">
+              <label htmlFor="inputDescription" className="control-label">
+                Description
+              </label>
+              <textarea
+                className="form-control"
+                id="inputDescription"
+                onChange={this.handleChange('description')}
+                placeholder="Description goes here"
+                rows="6"
+                value={description}
+                required
+              />
+            </div>
 
-        <input
-          value={priority}
-          onChange={this.handleChange('priority')}
-          type="number"
-          placeholder="Priority"
-        />
+            <div className="form-group">
+              <label htmlFor="inputPriority" className="control-label">
+                Priority
+              </label>
+              <input
+                className="form-control"
+                id="inputPriority"
+                onChange={this.handleChange('priority')}
+                placeholder="Priority"
+                type="number"
+                value={priority}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="inputDueDate" className="control-label">
+                Due date
+              </label>
+              <input
+                className="form-control"
+                id="inputDueDate"
+                onChange={this.handleChange('due_date')}
+                placeholder="Due date"
+                type="text"
+                value={due_date}
+                required
+              />
+            </div>
 
-        <input
-          value={due_date}
-          onChange={this.handleChange('due_date')}
-          type="text"
-          placeholder="Due date"
-        />
-
-        <button
-          onClick={this.handleSave}
-        >Update</button>
+            <button type="submit" className="btn btn-success">
+              Update task
+            </button>
+          </form>
+        </div>
       </div>
     );
   }

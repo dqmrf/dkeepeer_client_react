@@ -52,7 +52,7 @@ export default function reducer(state={
     case CREATE_TASK_FULFILLED: {
       return {
         ...state,
-        tasks: [...state.tasks, action.payload],
+        tasks: [action.payload, ...state.tasks],
       }
     }
 
