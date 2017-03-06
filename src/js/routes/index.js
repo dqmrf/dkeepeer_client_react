@@ -9,6 +9,7 @@ import AdminScope        from './scopes/AdminScope';
 import GuestScope        from './scopes/GuestScope';
 import Signup            from '../components/Auth/Signup';
 import Login             from '../components/Auth/Login';
+import EmailConfirmation from '../components/Auth/EmailConfirmation';
 import Dashboard         from '../components/Dashboard/Dashboard';
 import SingleTask        from '../components/Tasks/SingleTask';
 import TaskEditor        from '../components/Tasks/TaskEditor';
@@ -23,6 +24,7 @@ const routes = (
     <Route component={RequireAuth(GuestScope, false)}>
       <Route path="signup" component={Signup} />
       <Route path="login" component={Login} />
+      <Route path="confirm_email" component={EmailConfirmation} />
     </Route>
 
     <Route path="admin" component={RequireAuth(AdminScope)}>

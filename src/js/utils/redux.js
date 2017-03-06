@@ -8,8 +8,11 @@ import reducer                 from '../reducers';
 
 export function createRedux(initialState) {
   const middleware = [thunk];
+  let reduxDevtools = undefined;
 
   if (process.env.NODE_ENV !== 'production') {
+    reduxDevtools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+    
     middleware.push(createLogger({
       collapsed: true,
       predicate: (getState, action) => !(action.type === ROUTER_STATE_CHANGE)
@@ -20,7 +23,7 @@ export function createRedux(initialState) {
   const store = finalCreateStore(
     reducer, 
     initialState, 
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    reduxDevtools
   );
 
   if (module.hot) {

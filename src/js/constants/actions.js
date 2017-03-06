@@ -3,6 +3,8 @@ import keyMirror from 'key-mirror';
 export default keyMirror({
   ROUTER_STATE_CHANGE: null,
 
+  START_FETCHING: null,
+
   SIGNUP: null,
   SIGNUP_SUCCESS: null,
   SIGNUP_FAILURE: null,
@@ -10,8 +12,10 @@ export default keyMirror({
   LOGIN: null,
   LOGIN_SUCCESS: null,
   LOGIN_FAILURE: null,
-
   LOGOUT: null,
+
+  EMAIL_CONFIRMATION_FULFILLED: null,
+  EMAIL_CONFIRMATION_REJECTED: null,
 
   FETCH_TASKS: null,
   FETCH_TASKS_FULFILLED: null,

@@ -6,13 +6,17 @@ import prepareJson       from '../utils/prepareJson';
 import redirectBackAfter from '../utils/redirectBackAfter';
 
 const {
+  START_FETCHING,
+
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
 
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
+  LOGOUT,
 
-  LOGOUT
+  EMAIL_CONFIRMATION_FULFILLED,
+  EMAIL_CONFIRMATION_REJECTED
 } = Actions;
 // i've changed port for a while, because of rails server can't listening on port 3000
 const baseUrl = 'http://localhost:3001';
@@ -85,4 +89,21 @@ export function logout(router) {
     dispatch({ type: LOGOUT });
     router.push(...redirectBackAfter('/login', router.location));
   };
+}
+
+export function checkConfirmationToken(token) {
+  return async (dispatch, getState) => {
+    dispatch({ type: START_FETCHING });
+
+    try {
+      const res = await axios.get(`${baseUrl}/api/users/${token}/confirm_email`);
+
+      if (res.status == 200) {
+        const { message } = res.data;
+        dispatch({ type: EMAIL_CONFIRMATION_FULFILLED, payload: message });
+      }
+    } catch (error) {
+      dispatch({ type: EMAIL_CONFIRMATION_REJECTED, error });
+    }
+  }
 }

@@ -16,8 +16,6 @@ export default class App extends React.Component {
     error: PropTypes.string
   }
 
-  static fillStore(redux) {}
-
   static contextTypes = {
     router: PropTypes.object
   }
@@ -34,7 +32,7 @@ export default class App extends React.Component {
         />
         
         <div className="container">
-          {this.props.children}
+          {React.cloneElement(this.props.children, { dispatch: dispatch })}
         </div>
       </div>
     );
