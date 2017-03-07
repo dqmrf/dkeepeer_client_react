@@ -11,7 +11,7 @@ import {
   destroyTask }             from '../../actions/tasks';
 
 @connect(state => ({
-  tasks: state.tasks.tasks
+  tasks: state.tasks.tasks || []
 }), {
   fetchTasks,
   createTask,

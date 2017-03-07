@@ -33,13 +33,15 @@ export function fetchTasks() {
 
       const headers = getHeaders(token);
       const res = await axios.get(`${baseUrl}/api/tasks`, { headers });
-      
+      let tasks = []
+
       if (res.status == 200) {
-        const { tasks } = res.data;
-        dispatch({type: FETCH_TASKS_FULFILLED, payload: tasks})
+        tasks = res.data.tasks;
       }
+
+      dispatch({type: FETCH_TASKS_FULFILLED, payload: tasks})
     } catch (error) {
-      dispatch({ type: FETCH_TASKS_REJECTED, error });
+      dispatch({ type: FETCH_TASKS_REJECTED, payload: error });
     }
   };
 }
@@ -60,7 +62,7 @@ export function fetchTask(id) {
       }
       
     } catch (error) {
-      dispatch({ type: FETCH_TASK_REJECTED, error });
+      dispatch({ type: FETCH_TASK_REJECTED, payload: error });
     }
   };
 }
@@ -84,7 +86,7 @@ export function createTask(task) {
         dispatch({type: CREATE_TASK_FULFILLED, payload: data})
       }
     } catch (error) {
-      dispatch({ type: CREATE_TASK_REJECTED, error });
+      dispatch({ type: CREATE_TASK_REJECTED, payload: error });
     }
   }
 }
@@ -107,7 +109,7 @@ export function updateTask(id, task) {
         dispatch({ type: UPDATE_TASK_FULFILLED, payload: task });
       }
     } catch (error) {
-      dispatch({ type: UPDATE_TASK_REJECTED, error });
+      dispatch({ type: UPDATE_TASK_REJECTED, payload: error });
     }
   }
 }
@@ -130,7 +132,7 @@ export function destroyTask(id) {
         dispatch({type: DESTROY_TASK_FULFILLED, payload: id})
       }
     } catch (error) {
-      dispatch({ type: DESTROY_TASK_REJECTED, error });
+      dispatch({ type: DESTROY_TASK_REJECTED, payload: error });
     }
   }
 }

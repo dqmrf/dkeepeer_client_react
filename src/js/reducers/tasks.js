@@ -80,6 +80,7 @@ export default function reducer(state={
     case CREATE_TASK_REJECTED:
     case UPDATE_TASK_REJECTED:
     case DESTROY_TASK_REJECTED: {
+      console.error(action.payload);
       return {...state, fetching: false, error: action.payload}
     }
 
