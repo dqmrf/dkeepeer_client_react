@@ -1,9 +1,6 @@
-import styl                 from './styles.styl';
-import CSSModules           from 'react-css-modules';
 import React, { PropTypes } from 'react';
 import { Link }             from 'react-router';
 
-@CSSModules(styl)
 export default class TasksList extends React.Component {
   static propTypes = {
     tasks: PropTypes.array,
@@ -24,15 +21,15 @@ export default class TasksList extends React.Component {
 
     let tasksList =  tasks.map((task, i) => {
       return (
-        <li className={`list-group-item ${styl['list-group-item']}`} key={i}>
+        <li className="list-group-item" key={i}>
 
-          <div className={`${styl.actions} ${styl.left_actions}`}>
+          <div className="actions left_actions">
             <Link to={`/admin/task/${task.id}`}>
               {task.title}
             </Link>
           </div>
           
-          <div className={`btn-group ${styl.actions} ${styl.right_actions} ${styl.animated}`}>
+          <div className="btn-group actions right_actions animated">
             <Link 
               to={`/admin/task/${task.id}/edit`} 
               className="btn btn-primary btn-sm"
@@ -58,7 +55,7 @@ export default class TasksList extends React.Component {
     });
 
     return(
-      <ul className={`list-group ${styl['list-group']} ${styl['tasks-list']}`}>
+      <ul className="list-group tasks-list">
         {tasksList}
       </ul>
     );
