@@ -1,4 +1,4 @@
-import styles               from './styles.styl';
+import styl                 from './styles.styl';
 import CSSModules           from 'react-css-modules';
 import React, { PropTypes } from 'react';
 import { connect }          from 'react-redux';
@@ -11,14 +11,15 @@ import {
   destroyTask }             from '../../actions/tasks';
 
 @connect(state => ({
-  tasks: state.tasks.tasks || []
+  tasks: state.tasks.tasks || [],
+  isFetched: state.tasks.fetched,
 }), {
   fetchTasks,
   createTask,
   updateTask,
   destroyTask
 })
-@CSSModules(styles)
+@CSSModules(styl)
 export default class Dashboard extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
@@ -68,13 +69,12 @@ export default class Dashboard extends React.Component {
 
   render() {
     const { task } = this.state;
-    const { tasks } = this.props;
-
+    const { tasks, isFetched } = this.props;
     const activeTasks = tasks.filter(t => !t.completed);
     const completedTasks = tasks.filter(t => t.completed);
 
     return(
-      <div>
+      <div className={`row ${styl['dashboard-container']}${isFetched ? '' : ' fetching'}`}>
 
         <div className="col-md-8">
           <h2>Tasks List</h2>

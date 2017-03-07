@@ -6,7 +6,7 @@ import prepareJson       from '../utils/prepareJson';
 import redirectBackAfter from '../utils/redirectBackAfter';
 
 const {
-  START_FETCHING,
+  FETCHING_USER,
 
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
@@ -93,7 +93,7 @@ export function logout(router) {
 
 export function checkConfirmationToken(token) {
   return async (dispatch, getState) => {
-    dispatch({ type: START_FETCHING });
+    dispatch({ type: FETCHING_USER });
 
     try {
       const res = await axios.get(`${baseUrl}/api/users/${token}/confirm_email`);

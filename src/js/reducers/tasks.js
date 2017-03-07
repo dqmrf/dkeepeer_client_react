@@ -1,7 +1,8 @@
 import Actions from '../constants/actions';
 
 const {
-  FETCH_TASKS,
+  FETCHING_TASK,
+
   FETCH_TASKS_FULFILLED,
   FETCH_TASKS_REJECTED,
 
@@ -27,8 +28,12 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
-    case FETCH_TASKS: {
-      return {...state, fetching: true}
+    case FETCHING_TASK: {
+      return {
+        ...state,
+        fetching: true,
+        fetched: false
+      };
     }
 
     case FETCH_TASKS_FULFILLED: {
@@ -64,6 +69,8 @@ export default function reducer(state={
 
       return {
         ...state,
+        fetching: false,
+        fetched: true,
         tasks: newTasks,
       }
     }
@@ -71,6 +78,8 @@ export default function reducer(state={
     case DESTROY_TASK_FULFILLED: {
       return {
         ...state,
+        fetching: false,
+        fetched: true,
         tasks: state.tasks.filter(t => t.id !== action.payload),
       }
     }
