@@ -14,21 +14,32 @@ export default class TaskEditor extends React.Component {
     params: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired,
     updateTask: PropTypes.func.isRequired
+  };
+
+  static contextTypes = {
+    store: React.PropTypes.object
+  };
+
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      task: {
+        title: '',
+        description: '',
+        priority: '',
+        due_date: '',
+        completed: false
+      }
+    };
   }
 
-  state = {
-    task: {
-      title: '',
-      description: '',
-      priority: '',
-      due_date: '',
-      completed: false
-    }
-  }
+  componentWillMount() {
+    const { store } = this.context;
+    const { id } = this.props.params;
 
-  static fillStore(redux, props) {
-    if (props.params.id) {
-      return redux.dispatch(fetchTask(props.params.id));
+    if (id) {
+      return store.dispatch(fetchTask(id));
     }
   }
 
@@ -54,7 +65,7 @@ export default class TaskEditor extends React.Component {
     } });
   }
 
-  handleSave = (e) => {
+  handleSave = e => {
     e.preventDefault();
     const { id } = this.props.params;
     const { task } = this.state;

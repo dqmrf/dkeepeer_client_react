@@ -12,11 +12,18 @@ export default class SingleTask extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired
-  }
+  };
 
-  static fillStore(redux, props) {
-    if (props.params.id) {
-      return redux.dispatch(fetchTask(props.params.id));
+  static contextTypes = {
+    store: React.PropTypes.object
+  };
+
+  componentWillMount() {
+    const { store } = this.context;
+    const { id } = this.props.params;
+
+    if (id) {
+      return store.dispatch(fetchTask(id));
     }
   }
 

@@ -13,7 +13,7 @@ export default class TasksContainer extends React.Component {
     this.props.toggleCompleted(id, status);
   }
 
-  handleDestroy = (id) => {
+  handleDestroy = id => {
     this.props.handleDestroy(id);
   }
 

@@ -12,12 +12,12 @@ export default class EmailConfirmation extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     checkConfirmationToken: PropTypes.func.isRequired
-  }
+  };
 
   static contextTypes = {
     router: React.PropTypes.object,
     store: React.PropTypes.object
-  }
+  };
 
   componentWillMount() {
     const { query } = this.props.location;

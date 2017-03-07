@@ -11,21 +11,25 @@ export default class Signup extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     signup: PropTypes.func.isRequired
-  }
+  };
 
   static contextTypes = {
     router: React.PropTypes.object
-  }
-
-  state = {
-    user: {
-      email: '',
-      firstName: '',
-      lastName: '',
-      password: '',
-      passwordConfirmation: ''
-    }
   };
+
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      user: {
+        email: '',
+        firstName: '',
+        lastName: '',
+        password: '',
+        passwordConfirmation: ''
+      }
+    };
+  }
 
   handleChange = field => e => {
     e.preventDefault();
@@ -35,7 +39,7 @@ export default class Signup extends React.Component {
     } });
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
     const router = this.context.router;
     const { user } = this.state;

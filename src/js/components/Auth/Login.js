@@ -11,20 +11,24 @@ export default class Login extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     login: PropTypes.func.isRequired
-  }
+  };
 
   static contextTypes = {
     router: React.PropTypes.object
+  };
+
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      user: {
+        email: '',
+        password: ''
+      }
+    };
   }
 
-  state = {
-    user: {
-      email: '',
-      password: ''
-    }
-  }
-
-  handleLogin = (e) => {
+  handleLogin = e => {
     e.preventDefault();
     const { user } = this.state;
     const router = this.context.router;

@@ -15,7 +15,7 @@ export default class TasksList extends React.Component {
     this.props.toggleCompleted(id, status);
   }
 
-  handleDestroy = (id) => {
+  handleDestroy = id => {
     this.props.handleDestroy(id);
   }
 

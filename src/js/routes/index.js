@@ -1,7 +1,6 @@
 import React             from 'react';
 import { 
   Route,
-  IndexRoute,
   IndexRedirect }        from 'react-router';
 import App               from './App';
 import RequireAuth       from './RequireAuth';
@@ -13,8 +12,6 @@ import EmailConfirmation from '../components/Auth/EmailConfirmation';
 import Dashboard         from '../components/Dashboard/Dashboard';
 import SingleTask        from '../components/Tasks/SingleTask';
 import TaskEditor        from '../components/Tasks/TaskEditor';
-import fillStore         from '../utils/fillStore';
-import redirectBackAfter from '../utils/redirectBackAfter';
 import NotFound          from '../components/NotFound';
 
 const routes = (
@@ -38,24 +35,6 @@ const routes = (
   </Route>
 );
 
-function walk(routes, cb) {
-  cb(routes);
-
-  if (routes.childRoutes) {
-    routes.childRoutes.forEach(route => {
-      walk(route, cb)
-    });
-  }
-
-  return routes;
-}
-
-export default (store, client) => {
-  return walk(Route.createRouteFromReactElement(routes), route => {
-    route.onEnter = (nextState, transition) => {
-      if (client) {
-        fillStore(store, nextState, [route.component]);
-      }
-    };
-  });
+export default () => {
+  return Route.createRouteFromReactElement(routes);
 };

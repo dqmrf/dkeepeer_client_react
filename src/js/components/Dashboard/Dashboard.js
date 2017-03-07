@@ -25,20 +25,29 @@ export default class Dashboard extends React.Component {
     fetchTasks: PropTypes.func.isRequired,
     createTask: PropTypes.func.isRequired,
     destroyTask: PropTypes.func.isRequired
+  };
+
+  static contextTypes = {
+    store: React.PropTypes.object
+  };
+
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      task: {
+        title: '',
+        description: '',
+        priority: '',
+        due_date: '',
+        completed: false
+      }
+    };
   }
 
-  state = {
-    task: {
-      title: '',
-      description: '',
-      priority: '',
-      due_date: '',
-      completed: false
-    }
-  }
-
-  static fillStore(redux) {
-    return redux.dispatch(fetchTasks());
+  componentWillMount() {
+    const { store } = this.context;
+    return store.dispatch(fetchTasks());
   }
 
   toggleCompleted = (id, status) => {

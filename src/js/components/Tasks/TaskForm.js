@@ -4,10 +4,14 @@ export default class TaskForm extends React.Component {
   static propTypes = {
     task: PropTypes.object,
     onSave: PropTypes.func.isRequired
-  }
+  };
 
-  state = {
-    task: { ...this.props.task }
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      task: { ...props.task }
+    };
   }
 
   componentWillReceiveProps(newProps) {
@@ -18,7 +22,7 @@ export default class TaskForm extends React.Component {
     });
   }
 
-  handleSave = (e) => {
+  handleSave = e => {
     e.preventDefault();
     const { task } = this.state;
     this.props.onSave(task);
