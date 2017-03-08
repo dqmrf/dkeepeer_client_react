@@ -5,6 +5,7 @@ import {
   browserHistory, 
   hashHistory }     from 'react-router';
 import Root         from './Root';
+import './index.styl';
 
 const history = (process.env.NODE_ENV === 'production') ? browserHistory : hashHistory;
 

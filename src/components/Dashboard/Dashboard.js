@@ -1,5 +1,3 @@
-import styl                 from './styles.styl';
-import CSSModules           from 'react-css-modules';
 import React, { PropTypes } from 'react';
 import { connect }          from 'react-redux';
 import TaskForm             from '../Tasks/TaskForm';
@@ -9,6 +7,7 @@ import {
   createTask, 
   updateTask,
   destroyTask }             from '../../actions/tasks';
+import './Dashboard.styl';
 
 @connect(state => ({
   tasks: state.tasks.tasks || [],
@@ -19,7 +18,6 @@ import {
   updateTask,
   destroyTask
 })
-@CSSModules(styl)
 export default class Dashboard extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
