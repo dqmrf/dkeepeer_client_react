@@ -6,7 +6,8 @@ import {
   fetchTasks, 
   createTask, 
   updateTask,
-  destroyTask }             from '../../actions/tasks';
+  destroyTask,
+  destroyTasks }            from '../../actions/tasks';
 import './Dashboard.styl';
 
 @connect(state => ({
@@ -16,14 +17,16 @@ import './Dashboard.styl';
   fetchTasks,
   createTask,
   updateTask,
-  destroyTask
+  destroyTask,
+  destroyTasks
 })
 export default class Dashboard extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
     fetchTasks: PropTypes.func.isRequired,
     createTask: PropTypes.func.isRequired,
-    destroyTask: PropTypes.func.isRequired
+    destroyTask: PropTypes.func.isRequired,
+    destroyTasks: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -42,6 +45,9 @@ export default class Dashboard extends React.Component {
         completed: false
       }
     };
+
+    this.handleDestroy = this.handleDestroy.bind(this);
+    this.toggleCompleted = this.toggleCompleted.bind(this);
   }
 
   componentWillMount() {
@@ -57,12 +63,22 @@ export default class Dashboard extends React.Component {
     });
   }
 
-  handleSave = (task) => {
+  handleSave = task => {
     this.props.createTask(task);
   }
 
-  handleDestroy = (id) => {
-    this.props.destroyTask(id);
+  handleDestroy = id => {
+    switch (typeof id) {
+      case 'number': {
+        this.props.destroyTask(id);
+      }
+      case 'object': {
+        this.props.destroyTasks(id);
+      }
+      default: {
+        return false;
+      }
+    }
   }
 
   render() {
@@ -72,7 +88,7 @@ export default class Dashboard extends React.Component {
     const completedTasks = tasks.filter(t => t.completed);
 
     return(
-      <div className={`row ${styl['dashboard-container']}${isFetched ? '' : ' fetching'}`}>
+      <div className={`row ${isFetched ? '' : ' fetching'}`}>
 
         <div className="col-md-8">
           <h2>Tasks List</h2>
@@ -81,14 +97,14 @@ export default class Dashboard extends React.Component {
             <TasksContainer
               tasks={activeTasks}
               isActive={true}
-              toggleCompleted={this.toggleCompleted.bind(this)}
-              handleDestroy={this.handleDestroy.bind(this)}
+              toggleCompleted={this.toggleCompleted}
+              handleDestroy={this.handleDestroy}
             />
             <TasksContainer
               tasks={completedTasks}
               isActive={false}
-              toggleCompleted={this.toggleCompleted.bind(this)}
-              handleDestroy={this.handleDestroy.bind(this)}
+              toggleCompleted={this.toggleCompleted}
+              handleDestroy={this.handleDestroy}
             />
           </div>
         </div>

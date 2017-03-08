@@ -21,7 +21,10 @@ const {
   UPDATE_TASK_REJECTED,
 
   DESTROY_TASK_FULFILLED,
-  DESTROY_TASK_REJECTED
+  DESTROY_TASK_REJECTED,
+
+  DESTROY_TASKS_FULFILLED,
+  DESTROY_TASKS_REJECTED
 } = Actions;
 
 const baseUrl = 'http://localhost:3001';
@@ -145,6 +148,38 @@ export function destroyTask(id) {
       }
     } catch (error) {
       dispatch({ type: DESTROY_TASK_REJECTED, payload: error });
+    }
+  }
+}
+
+export function destroyTasks(ids) {
+  return async (dispatch, getState) => {
+    dispatch({ type: FETCHING_TASK });
+
+    try {
+      const { auth: { token } } = getState();
+
+      if (!token) { return; }
+
+      let body = { tasks: ids }
+      let headers = getHeaders(token);
+
+      headers['Content-Type'] = 'application/json';
+
+      const res = await axios.delete(`${baseUrl}/api/tasks/batch_destroy`, 
+        { 
+          params: body,
+          headers: headers 
+        }
+      );
+
+      if (res.status == 200) {
+        const { ids } = res.data;
+        dispatch({type: DESTROY_TASKS_FULFILLED, payload: ids});
+      }
+
+    } catch (error) {
+      dispatch({ type: DESTROY_TASKS_REJECTED, payload: error });
     }
   }
 }

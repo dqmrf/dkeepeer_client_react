@@ -16,7 +16,10 @@ const {
   UPDATE_TASK_REJECTED,
 
   DESTROY_TASK_FULFILLED,
-  DESTROY_TASK_REJECTED
+  DESTROY_TASK_REJECTED,
+
+  DESTROY_TASKS_FULFILLED,
+  DESTROY_TASKS_REJECTED
 } = Actions;
 
 export default function reducer(state={
@@ -84,11 +87,21 @@ export default function reducer(state={
       }
     }
 
+    case DESTROY_TASKS_FULFILLED: {
+      return {
+        ...state,
+        fetching: false,
+        fetched: true,
+        tasks: state.tasks.filter(t => !action.payload.includes(t.id+'')),
+      }
+    }
+
     case FETCH_TASK_REJECTED:
     case FETCH_TASKS_REJECTED:
     case CREATE_TASK_REJECTED:
     case UPDATE_TASK_REJECTED:
-    case DESTROY_TASK_REJECTED: {
+    case DESTROY_TASK_REJECTED:
+    case DESTROY_TASKS_REJECTED: {
       return {...state, fetching: false, error: action.payload}
     }
 
