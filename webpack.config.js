@@ -1,13 +1,15 @@
-var debug = process.env.NODE_ENV !== "production";
+var debug = process.env.NODE_ENV !== 'production';
 var webpack = require('webpack');
 var path = require('path');
-const cssnext = require('cssnext');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const autoprefixer = require('autoprefixer');
+var bootstrap = require('bootstrap-styl');
 
-module.exports = {
-  context: path.join(__dirname, "src"),
-  devtool: debug ? "inline-sourcemap" : null,
-  entry: "./client.js",
+const config = {
+  context: path.join(__dirname, 'src'),
+  devtool: debug ? 'inline-sourcemap' : null,
+  entry: './client.js',
   output: {
     filename: '[name]-[hash].js',
     path: path.join(__dirname, 'dist'),
@@ -23,18 +25,22 @@ module.exports = {
       exclude: /(node_modules|bower_components)/
     }, {
       test: /\.css$/,
-      use: [
-        'style-loader',
-        'css-loader?importLoaders=1',
-        /*'postcss-loader'*/
-      ]
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader', 'postcss-loader'],
+      })
     }, {
       test: /\.styl$/,
-      use: [
-        'style-loader',
-        'css-loader?importLoaders=1',
-        'stylus-loader',
-      ]
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader', 'postcss-loader', 'stylus-loader'],
+      })
+    }, {
+      test: /\.sass$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader', 'postcss-loader', 'sass-loader'],
+      })
     }, {
       test: /(\.jpg$|\.png$)/,
       use: 'file-loader'
@@ -46,13 +52,34 @@ module.exports = {
       use: 'file-loader'
     }]
   },
-  plugins: debug ? [
-    new HtmlWebpackPlugin({template: 'index.html'}),
-    new webpack.NamedModulesPlugin()
-  ] : [
-    new HtmlWebpackPlugin({template: 'index.html'}),
+  plugins: [
+    new HtmlWebpackPlugin({template: 'index.html'})
+  ],
+};
+
+if (debug) {
+  config.plugins.push(
+    new webpack.NamedModulesPlugin(),
+    new ExtractTextPlugin('[name].css'),
+    new webpack.LoaderOptionsPlugin({
+      test: /(\.sass$|\.styl$)/,
+      options: {
+        context: path.join(__dirname, 'src'),
+        postcss:  [
+          autoprefixer({
+            browsers: ['last 10 versions']
+          })
+        ],
+        stylus: { use: [bootstrap()] }
+      }
+    })
+  );
+} else {
+  config.plugins.push(
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false })
-  ]
-};
+  );
+}
+
+module.exports = config;
