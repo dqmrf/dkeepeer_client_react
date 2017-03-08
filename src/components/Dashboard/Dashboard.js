@@ -10,7 +10,8 @@ import {
 import './Dashboard.styl';
 
 @connect(state => ({
-  tasks: state.tasks.tasks || []
+  tasks: state.tasks.tasks || [],
+  isFetched: state.tasks.fetched,
 }), {
   fetchTasks,
   createTask,
@@ -66,13 +67,12 @@ export default class Dashboard extends React.Component {
 
   render() {
     const { task } = this.state;
-    const { tasks } = this.props;
-
+    const { tasks, isFetched } = this.props;
     const activeTasks = tasks.filter(t => !t.completed);
     const completedTasks = tasks.filter(t => t.completed);
 
     return(
-      <div>
+      <div className={`row ${styl['dashboard-container']}${isFetched ? '' : ' fetching'}`}>
 
         <div className="col-md-8">
           <h2>Tasks List</h2>

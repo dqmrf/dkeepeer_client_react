@@ -6,6 +6,8 @@ import prepareJson       from '../utils/prepareJson';
 import redirectBackAfter from '../utils/redirectBackAfter';
 
 const {
+  FETCHING_TASK,
+
   FETCH_TASKS_FULFILLED,
   FETCH_TASKS_REJECTED,
 
@@ -26,6 +28,8 @@ const baseUrl = 'http://localhost:3001';
 
 export function fetchTasks() {
   return async (dispatch, getState) => {
+    dispatch({ type: FETCHING_TASK });
+
     try {
       const { auth: { token } } = getState();
 
@@ -48,6 +52,8 @@ export function fetchTasks() {
 
 export function fetchTask(id) {
   return async (dispatch, getState) => {
+    dispatch({ type: FETCHING_TASK });
+
     try {
       const { auth: { token } } = getState();
 
@@ -69,6 +75,8 @@ export function fetchTask(id) {
 
 export function createTask(task) {
   return async (dispatch, getState) => {
+    dispatch({ type: FETCHING_TASK });
+
     try {
       const { auth: { token } } = getState();
 
@@ -93,6 +101,8 @@ export function createTask(task) {
 
 export function updateTask(id, task) {
   return async (dispatch, getState) => {
+    dispatch({ type: FETCHING_TASK });
+
     try {
       const { auth: { token } } = getState();
 
@@ -116,6 +126,8 @@ export function updateTask(id, task) {
 
 export function destroyTask(id) {
   return async (dispatch, getState) => {
+    dispatch({ type: FETCHING_TASK });
+    
     try {
       const { auth: { token } } = getState();
 

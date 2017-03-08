@@ -3,7 +3,7 @@ import Actions from '../constants/actions';
 const {
   ROUTER_STATE_CHANGE,
 
-  START_FETCHING,
+  FETCHING_USER,
 
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
       };
     }
 
-    case START_FETCHING: {
+    case FETCHING_USER: {
       return {
         ...state,
         fetching: true,

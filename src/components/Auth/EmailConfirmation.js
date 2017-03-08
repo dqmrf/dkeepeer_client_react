@@ -4,7 +4,7 @@ import { checkConfirmationToken } from '../../actions/auth';
 
 @connect(state => ({
   auth: state.auth,
-  requestProcessed: state.auth.fetched,
+  isFetched: state.auth.fetched,
 }), {
   checkConfirmationToken,
 })
@@ -33,12 +33,12 @@ export default class EmailConfirmation extends React.Component {
   }
 
   render() {
-    let { requestProcessed } = this.props;
+    let { isFetched } = this.props;
 
     return(
       <div className="row">
         <div className="col-md-6 col-md-offset-3">
-          { requestProcessed ? 
+          { isFetched ? 
             <h1>Your email address has successfully confirmed.</h1> :
             <h1>Loading...</h1>
           }
