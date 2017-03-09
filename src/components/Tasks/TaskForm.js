@@ -30,7 +30,7 @@ export default class TaskForm extends React.Component {
 
   handleChange = field => e => {
     e.preventDefault();
-    this.setState({ ['task']: {
+    this.setState({ task: {
       ...this.state.task,
       [field]: e.target.value
     } });

@@ -5,11 +5,9 @@ import './TasksContainer.styl';
 export default class TasksContainer extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
+    functions: PropTypes.object.isRequired,
     checkedTasks: PropTypes.array.isRequired,
     isActive: PropTypes.bool.isRequired,
-    updateCheckedTasks: PropTypes.func.isRequired,
-    toggleCompleted: PropTypes.func.isRequired,
-    handleDestroy: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -21,17 +19,22 @@ export default class TasksContainer extends React.Component {
   }
 
   toggleCompleted = (id, status, i) => {
-    this.props.toggleCompleted(id, status, i);
+    const { toggleCompleted } = this.props.functions;
+
+    toggleCompleted(id, status, i);
   }
 
   handleDestroy = id => {
-    this.props.handleDestroy(id);
+    const { handleDestroy } = this.props.functions;
+
+    handleDestroy(id);
   }
 
   handleDestroyMultiple = e => {
     const { checkedTasks } = this.props;
+    const { handleDestroy } = this.props.functions;
 
-    this.handleDestroy(checkedTasks);
+    handleDestroy(checkedTasks);
   }
 
   handleCheckboxChange = (id, checked, index) => {
@@ -49,11 +52,13 @@ export default class TasksContainer extends React.Component {
       tasks.push(id);
     }
 
-    this.updateCheckedTasks(tasks, this.props.isActive);
+    this.updateTasksState(tasks, this.props.isActive, true);
   }
 
-  updateCheckedTasks = (tasks, isActive) => {
-    this.props.updateCheckedTasks(tasks, isActive);
+  updateTasksState = (tasks, isActive, isChecked=false) => {
+    const { updateTasksState } = this.props.functions;
+
+    updateTasksState(tasks, isActive, isChecked);
   }
 
   handleCheckAll = check => e => {
@@ -64,10 +69,27 @@ export default class TasksContainer extends React.Component {
       tasks.forEach((task, i) => ids.push(task.id));
     }
     
-    this.updateCheckedTasks(ids, this.props.isActive);
+    this.updateTasksState(ids, this.props.isActive, true);
   }
 
+  sortBy = (field, desc) => e => {
+    const { tasks, isActive, functions } = this.props;
+    let sortedTasks = tasks.sort((a, b) => {
+      let A = getFormatted(a);
+      let B = getFormatted(b);
+      return !desc ? _sort(A, B) : _sort(B, A);
+    });
 
+    functions.updateTasksState(sortedTasks, isActive);
+
+    function getFormatted(s) {
+      return typeof s == 'string' ? s[field].toUpperCase() : s[field];
+    }
+
+    function _sort(A, B) {
+      return (A < B) ? -1 : (A > B) ? 1 : 0;
+    }
+  }
 
   render() {
     const { tasks, isActive } = this.props;
@@ -84,6 +106,16 @@ export default class TasksContainer extends React.Component {
               {isActive ? 'Active tasks' : 'Completed tasks'}
             </h4>
             <div className="panel-actions-overlap">
+              <div className="btn-group">
+                <button 
+                  className="btn btn-default btn-sm"
+                  onClick={this.sortBy.call(this, 'title', false)}
+                >Sort by title</button>
+                <button 
+                  className="btn btn-default btn-sm"
+                  onClick={this.sortBy.call(this, 'id', false)}
+                >Sort by id</button>
+              </div>
               <div className="btn-group">
                 <button 
                   className={`btn btn-${isActive ? 'success' : 'primary'} btn-sm`}

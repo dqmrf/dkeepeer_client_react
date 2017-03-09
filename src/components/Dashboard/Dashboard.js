@@ -35,7 +35,7 @@ export default class Dashboard extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       task: {
         title: '',
@@ -43,6 +43,11 @@ export default class Dashboard extends React.Component {
         priority: '',
         due_date: '',
         completed: false
+      },
+      tasks: {
+        all: [ ...props.tasks ],
+        active: [ ...props.tasks.filter(t => !t.completed) ],
+        completed: [ ...props.tasks.filter(t => t.completed) ],
       },
       checkedTasks: {
         active: [],
@@ -52,11 +57,22 @@ export default class Dashboard extends React.Component {
 
     this.handleDestroy = this.handleDestroy.bind(this);
     this.toggleCompleted = this.toggleCompleted.bind(this);
-    this.updateCheckedTasks = this.updateCheckedTasks.bind(this);
+    this.updateTasksState = this.updateTasksState.bind(this);
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      tasks: {
+        all: [ ...newProps.tasks ],
+        active: [ ...newProps.tasks.filter(t => !t.completed) ],
+        completed: [ ...newProps.tasks.filter(t => t.completed) ],
+      }
+    });
   }
 
   componentWillMount() {
     const { store } = this.context;
+
     return store.dispatch(fetchTasks());
   }
 
@@ -95,13 +111,14 @@ export default class Dashboard extends React.Component {
     }
   }
 
-  updateCheckedTasks = (tasks, isActive) => {
+  updateTasksState = (tasks, isActive, isChecked=false) => {
     if (!tasks) return;
 
+    let stateField = isChecked ? 'checkedTasks' : 'tasks';
     let field = isActive ? 'active' : 'completed';
 
-    this.setState({ checkedTasks: {
-      ...this.state.checkedTasks,
+    this.setState({ [stateField]: {
+      ...this.state[stateField],
       [field]: tasks
     } });
   }
@@ -114,9 +131,11 @@ export default class Dashboard extends React.Component {
     switch (typeof id) {
       case 'number': {
         this.props.destroyTask(id);
+        return;
       }
       case 'object': {
         this.props.destroyTasks(id);
+        return;
       }
       default: {
         return false;
@@ -125,10 +144,16 @@ export default class Dashboard extends React.Component {
   }
 
   render() {
-    const { task, checkedTasks } = this.state;
-    const { tasks, isFetched } = this.props;
-    const activeTasks = tasks.filter(t => !t.completed);
-    const completedTasks = tasks.filter(t => t.completed);
+    const { task, tasks, checkedTasks } = this.state;
+    const activeTasks = tasks.active;
+    const completedTasks = tasks.completed;
+    const { isFetched } = this.props;
+
+    let functions = {
+      toggleCompleted: this.toggleCompleted,
+      updateTasksState: this.updateTasksState,
+      handleDestroy: this.handleDestroy
+    };
 
     return(
       <div className={`row ${isFetched ? '' : ' fetching'}`}>
@@ -141,17 +166,13 @@ export default class Dashboard extends React.Component {
               tasks={activeTasks}
               checkedTasks={checkedTasks.active}
               isActive={true}
-              toggleCompleted={this.toggleCompleted}
-              updateCheckedTasks={this.updateCheckedTasks}
-              handleDestroy={this.handleDestroy}
+              functions={functions}
             />
             <TasksContainer
               tasks={completedTasks}
               checkedTasks={checkedTasks.completed}
               isActive={false}
-              toggleCompleted={this.toggleCompleted}
-              updateCheckedTasks={this.updateCheckedTasks}
-              handleDestroy={this.handleDestroy}
+              functions={functions}
             />
           </div>
         </div>
