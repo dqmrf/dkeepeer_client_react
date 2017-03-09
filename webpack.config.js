@@ -60,7 +60,7 @@ const config = {
 if (debug) {
   config.plugins.push(
     new webpack.NamedModulesPlugin(),
-    new ExtractTextPlugin('[name].css'),
+    new ExtractTextPlugin('[name]-[hash].css'),
     new webpack.LoaderOptionsPlugin({
       test: /(\.css$|\.sass$|\.styl$)/,
       options: {
