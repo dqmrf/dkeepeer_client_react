@@ -1,7 +1,9 @@
 import React, { PropTypes }      from 'react';
 import { connect }               from 'react-redux';
-import marked                    from 'marked';
+import DatePicker                from 'react-datepicker'
+import Moment                    from 'moment';
 import { fetchTask, updateTask } from '../../actions/tasks';
+import DateInput                 from './DateInput';
 
 @connect(state => ({
   task: state.tasks.task
@@ -30,7 +32,8 @@ export default class TaskEditor extends React.Component {
         priority: '',
         due_date: '',
         completed: false
-      }
+      },
+      startDate: Moment()
     };
   }
 
@@ -53,7 +56,8 @@ export default class TaskEditor extends React.Component {
         priority: task.priority,
         due_date: task.due_date,
         completed: task.completed
-      }
+      },
+      startDate: Moment(task.due_date)
     });
   }
 
@@ -63,6 +67,16 @@ export default class TaskEditor extends React.Component {
       ...this.state.task,
       [field]: e.target.value
     } });
+  }
+
+  handleDateChange = e => {
+    this.setState({ 
+      task: {
+        ...this.state.task,
+        due_date: e._d
+      },
+      startDate: e
+    });
   }
 
   handleSave = e => {
@@ -128,14 +142,15 @@ export default class TaskEditor extends React.Component {
               <label htmlFor="inputDueDate" className="control-label">
                 Due date
               </label>
-              <input
-                className="form-control"
+              <DatePicker
+                customInput={<DateInput />}
                 id="inputDueDate"
-                onChange={this.handleChange('due_date')}
-                placeholder="Due date"
-                type="text"
-                value={due_date}
-                required
+                className="form-control"
+                minDate={Moment()}
+                selected={this.state.startDate}
+                placeholderText="Click to select a date"
+                onChange={this.handleDateChange}
+                fixedHeight
               />
             </div>
 

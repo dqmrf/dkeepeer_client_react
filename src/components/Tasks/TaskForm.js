@@ -1,4 +1,7 @@
 import React, { PropTypes } from 'react';
+import DatePicker           from 'react-datepicker'
+import Moment               from 'moment';
+import DateInput            from './DateInput';
 
 export default class TaskForm extends React.Component {
   static propTypes = {
@@ -10,7 +13,8 @@ export default class TaskForm extends React.Component {
     super(props);
     
     this.state = {
-      task: { ...props.task }
+      task: { ...props.task },
+      startDate: Moment()
     };
   }
 
@@ -34,6 +38,16 @@ export default class TaskForm extends React.Component {
       ...this.state.task,
       [field]: e.target.value
     } });
+  }
+
+  handleDateChange = e => {
+    this.setState({ 
+      task: {
+        ...this.state.task,
+        due_date: e._d
+      },
+      startDate: e
+    });
   }
 
   render() {
@@ -85,19 +99,20 @@ export default class TaskForm extends React.Component {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="inputDueDate" className="control-label">
             Due date
           </label>
-          <input
-            className="form-control"
+          <DatePicker
+            customInput={<DateInput />}
             id="inputDueDate"
-            onChange={this.handleChange('due_date')}
-            placeholder="Due date"
-            type="text"
-            value={due_date}
-            required
+            className="form-control"
+            minDate={Moment()}
+            selected={this.state.startDate}
+            placeholderText="Click to select a date"
+            onChange={this.handleDateChange}
+            fixedHeight
           />
         </div>
 

@@ -69,10 +69,12 @@ export default class Dashboard extends React.Component {
   }
 
   getTasksState(props) {
+    const { tasks } = props;
+
     return {
-      all: [ ...props.tasks ],
-      active: [ ...props.tasks.filter(t => !t.completed) ],
-      completed: [ ...props.tasks.filter(t => t.completed) ],
+      all: [ ...tasks ],
+      active: [ ...tasks.filter(t => !t.completed) ],
+      completed: [ ...tasks.filter(t => t.completed) ],
     }
   }
 

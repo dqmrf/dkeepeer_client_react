@@ -62,7 +62,7 @@ if (debug) {
     new webpack.NamedModulesPlugin(),
     new ExtractTextPlugin('[name].css'),
     new webpack.LoaderOptionsPlugin({
-      test: /(\.sass$|\.styl$)/,
+      test: /(\.css$|\.sass$|\.styl$)/,
       options: {
         context: path.join(__dirname, 'src'),
         postcss:  [
