@@ -5,7 +5,9 @@ import './TasksContainer.styl';
 export default class TasksContainer extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
+    checkedTasks: PropTypes.array.isRequired,
     isActive: PropTypes.bool.isRequired,
+    updateCheckedTasks: PropTypes.func.isRequired,
     toggleCompleted: PropTypes.func.isRequired,
     handleDestroy: PropTypes.func.isRequired
   };
@@ -13,17 +15,13 @@ export default class TasksContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      checkedTasks: []
-    };
-
     this.handleDestroy = this.handleDestroy.bind(this);
     this.toggleCompleted = this.toggleCompleted.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
   }
 
-  toggleCompleted = (id, status) => {
-    this.props.toggleCompleted(id, status);
+  toggleCompleted = (id, status, i) => {
+    this.props.toggleCompleted(id, status, i);
   }
 
   handleDestroy = id => {
@@ -31,13 +29,13 @@ export default class TasksContainer extends React.Component {
   }
 
   handleDestroyMultiple = e => {
-    const { checkedTasks } = this.state;
+    const { checkedTasks } = this.props;
 
     this.handleDestroy(checkedTasks);
   }
 
   handleCheckboxChange = (id, checked, index) => {
-    const { checkedTasks } = this.state;
+    const { checkedTasks } = this.props;
     let tasks = checkedTasks; 
 
     if (checked) {
@@ -51,7 +49,11 @@ export default class TasksContainer extends React.Component {
       tasks.push(id);
     }
 
-    this.setState({ checkedTasks: tasks });
+    this.updateCheckedTasks(tasks, this.props.isActive);
+  }
+
+  updateCheckedTasks = (tasks, isActive) => {
+    this.props.updateCheckedTasks(tasks, isActive);
   }
 
   handleCheckAll = check => e => {
@@ -62,12 +64,14 @@ export default class TasksContainer extends React.Component {
       tasks.forEach((task, i) => ids.push(task.id));
     }
     
-    this.setState({checkedTasks: ids});
+    this.updateCheckedTasks(ids, this.props.isActive);
   }
+
+
 
   render() {
     const { tasks, isActive } = this.props;
-    const { checkedTasks } = this.state;
+    const { checkedTasks } = this.props;
 
     if (!tasks || !tasks.length) return false;
 
@@ -79,20 +83,22 @@ export default class TasksContainer extends React.Component {
             <h4 className="panel-title">
               {isActive ? 'Active tasks' : 'Completed tasks'}
             </h4>
-            <div className="btn-group">
-              <button 
-                className={`btn btn-${isActive ? 'success' : 'primary'} btn-sm`}
-                disabled={checkedTasks.length ? '' : 'disabled'}
-                onClick={this.handleDestroyMultiple}
-              >Delete selected</button>
-              <button 
-                className="btn btn-default btn-sm"
-                onClick={this.handleCheckAll.call(this, true)}
-              >Check all</button>
-              <button 
-                className="btn btn-default btn-sm"
-                onClick={this.handleCheckAll.call(this, false)}
-              >Uncheck all</button>
+            <div className="panel-actions-overlap">
+              <div className="btn-group">
+                <button 
+                  className={`btn btn-${isActive ? 'success' : 'primary'} btn-sm`}
+                  disabled={checkedTasks.length ? '' : 'disabled'}
+                  onClick={this.handleDestroyMultiple}
+                >Delete selected</button>
+                <button 
+                  className="btn btn-default btn-sm"
+                  onClick={this.handleCheckAll.call(this, true)}
+                ><i className="glyphicon glyphicon-check"></i></button>
+                <button 
+                  className="btn btn-default btn-sm"
+                  onClick={this.handleCheckAll.call(this, false)}
+                ><i className="glyphicon glyphicon-unchecked"></i></button>
+              </div>
             </div>
           </div>
 

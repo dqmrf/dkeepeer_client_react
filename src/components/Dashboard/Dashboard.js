@@ -3,8 +3,8 @@ import { connect }          from 'react-redux';
 import TaskForm             from '../Tasks/TaskForm';
 import TasksContainer       from '../Tasks/TasksContainer';
 import { 
-  fetchTasks, 
-  createTask, 
+  fetchTasks,
+  createTask,
   updateTask,
   destroyTask,
   destroyTasks }            from '../../actions/tasks';
@@ -43,11 +43,16 @@ export default class Dashboard extends React.Component {
         priority: '',
         due_date: '',
         completed: false
+      },
+      checkedTasks: {
+        active: [],
+        completed: []
       }
     };
 
     this.handleDestroy = this.handleDestroy.bind(this);
     this.toggleCompleted = this.toggleCompleted.bind(this);
+    this.updateCheckedTasks = this.updateCheckedTasks.bind(this);
   }
 
   componentWillMount() {
@@ -55,12 +60,50 @@ export default class Dashboard extends React.Component {
     return store.dispatch(fetchTasks());
   }
 
-  toggleCompleted = (id, status) => {
+  toggleCompleted = (id, status, i) => {
     const task = this.props.tasks.find(task => task.id === id);
-    this.props.updateTask(id, {
+    const taskId = task.id;
+    const { checkedTasks } = this.state;
+    const { active, completed } = checkedTasks;
+
+    let activeTasks = active;
+    let completedTasks = completed;
+
+    let updated = this.props.updateTask.bind(this, id, {
       ...task,
       completed: !status
     });
+
+    if (status) {
+      if (completed.includes(taskId)) {
+        completedTasks.splice(i, 1);
+        activeTasks.push(taskId);
+      }
+    } else {
+      if (active.includes(taskId)) {
+        activeTasks.splice(i, 1);
+        completedTasks.push(taskId);
+      }
+    }
+
+    if (updated()) {
+      this.setState({ checkedTasks: {
+        ...this.state.checkedTasks,
+        active: activeTasks,
+        completed: completedTasks,
+      } });
+    }
+  }
+
+  updateCheckedTasks = (tasks, isActive) => {
+    if (!tasks) return;
+
+    let field = isActive ? 'active' : 'completed';
+
+    this.setState({ checkedTasks: {
+      ...this.state.checkedTasks,
+      [field]: tasks
+    } });
   }
 
   handleSave = task => {
@@ -82,7 +125,7 @@ export default class Dashboard extends React.Component {
   }
 
   render() {
-    const { task } = this.state;
+    const { task, checkedTasks } = this.state;
     const { tasks, isFetched } = this.props;
     const activeTasks = tasks.filter(t => !t.completed);
     const completedTasks = tasks.filter(t => t.completed);
@@ -96,14 +139,18 @@ export default class Dashboard extends React.Component {
           <div>
             <TasksContainer
               tasks={activeTasks}
+              checkedTasks={checkedTasks.active}
               isActive={true}
               toggleCompleted={this.toggleCompleted}
+              updateCheckedTasks={this.updateCheckedTasks}
               handleDestroy={this.handleDestroy}
             />
             <TasksContainer
               tasks={completedTasks}
+              checkedTasks={checkedTasks.completed}
               isActive={false}
               toggleCompleted={this.toggleCompleted}
+              updateCheckedTasks={this.updateCheckedTasks}
               handleDestroy={this.handleDestroy}
             />
           </div>

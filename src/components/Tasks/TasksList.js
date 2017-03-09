@@ -11,8 +11,8 @@ export default class TasksList extends React.Component {
     handleDestroy: PropTypes.func.isRequired
   };
 
-  toggleCompleted = (id, status) => {
-    this.props.toggleCompleted(id, status);
+  toggleCompleted = (id, status, i) => {
+    this.props.toggleCompleted(id, status, i);
   }
 
   handleDestroy = id => {
@@ -48,23 +48,23 @@ export default class TasksList extends React.Component {
           </div>
           
           <div className="btn-group actions right-actions animated">
-            <Link 
-              to={`/admin/task/${id}/edit`} 
-              className="btn btn-primary btn-sm"
-            >
-              Edit
-            </Link>
             <button 
-              onClick={this.toggleCompleted.bind(this, id, completed)}
+              onClick={this.toggleCompleted.bind(this, id, completed, i)}
               className={`btn btn-${completed ? 'warning' : 'success'} btn-sm`}
             >
               {completed ? 'Mark active' : 'Mark done'}
             </button>
+            <Link 
+              to={`/admin/task/${id}/edit`} 
+              className="btn btn-primary btn-sm"
+            >
+              <i className="glyphicon glyphicon-pencil"></i>
+            </Link>
             <button 
               onClick={this.handleDestroy.bind(this, id)}
               className="btn btn-danger btn-sm"
             >
-              Destroy
+              <i className="glyphicon glyphicon-remove"></i>
             </button>
           </div>
 

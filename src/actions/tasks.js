@@ -120,9 +120,11 @@ export function updateTask(id, task) {
 
       if (res.status == 200) {
         dispatch({ type: UPDATE_TASK_FULFILLED, payload: task });
+        return true;
       }
     } catch (error) {
       dispatch({ type: UPDATE_TASK_REJECTED, payload: error });
+      return false;
     }
   }
 }
