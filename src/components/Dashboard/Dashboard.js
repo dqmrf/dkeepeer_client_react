@@ -44,11 +44,7 @@ export default class Dashboard extends React.Component {
         due_date: '',
         completed: false
       },
-      tasks: {
-        all: [ ...props.tasks ],
-        active: [ ...props.tasks.filter(t => !t.completed) ],
-        completed: [ ...props.tasks.filter(t => t.completed) ],
-      },
+      tasks: this.getTasksState(props),
       checkedTasks: {
         active: [],
         completed: []
@@ -62,11 +58,7 @@ export default class Dashboard extends React.Component {
 
   componentWillReceiveProps(newProps) {
     this.setState({
-      tasks: {
-        all: [ ...newProps.tasks ],
-        active: [ ...newProps.tasks.filter(t => !t.completed) ],
-        completed: [ ...newProps.tasks.filter(t => t.completed) ],
-      }
+      tasks: this.getTasksState(newProps),
     });
   }
 
@@ -74,6 +66,14 @@ export default class Dashboard extends React.Component {
     const { store } = this.context;
 
     return store.dispatch(fetchTasks());
+  }
+
+  getTasksState(props) {
+    return {
+      all: [ ...props.tasks ],
+      active: [ ...props.tasks.filter(t => !t.completed) ],
+      completed: [ ...props.tasks.filter(t => t.completed) ],
+    }
   }
 
   toggleCompleted = (id, status, i) => {
