@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect }          from 'react-redux';
 import { login }            from '../../actions/auth';
+import FormInput            from '../Layout/Form/Input';
 
 @connect(state => ({
   auth: state.auth
@@ -24,14 +25,15 @@ export default class Login extends React.Component {
       user: {
         email: '',
         password: ''
-      }
+      },
+      canSubmit: false
     };
   }
 
-  handleLogin = e => {
-    e.preventDefault();
+  handleSubmit = model => {
     const { user } = this.state;
     const router = this.context.router;
+
     this.props.login(user, router);
   }
 
@@ -43,6 +45,18 @@ export default class Login extends React.Component {
     } });
   }
 
+  enableButton = () => {
+    this.setState({
+      canSubmit: true
+    });
+  }
+
+  disableButton = () => {
+    this.setState({
+      canSubmit: false
+    });
+  }
+
   render() {
     const { auth: { error } } = this.props;
     const { user } = this.state;
@@ -52,47 +66,52 @@ export default class Login extends React.Component {
       <div className="row">
         <div className="col-md-6 col-md-offset-3">
 
-          <h2>Login</h2>
+          <h3>Login</h3>
 
           {error
             ? <div>{error.message}</div>
             : null}
 
-          <form onSubmit={this.handleLogin}>
-            <div className="form-group">
-              <label htmlFor="inputEmail" className="control-label">
-                Email
-              </label>
-              <input
-                className="form-control"
-                id="inputEmail"
-                onChange={this.handleChange('email')}
-                placeholder="Email"
-                type="email"
-                value={email}
-                required
-              />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="inputPassword" className="control-label">
-                Password
-              </label>
-              <input
-                className="form-control"
-                id="inputPassword"
-                onChange={this.handleChange('password')}
-                placeholder="Password"
-                type="password"
-                value={password}
-                required
-              />
-            </div>
+          <Formsy.Form 
+            onValidSubmit={this.handleSubmit} 
+            onValid={this.enableButton} 
+            onInvalid={this.disableButton}
+          >
 
-            <button type="submit" className="btn btn-success">
-              Sign in
-            </button>
-          </form>
+            <FormInput 
+              title="Email"
+              name="email"
+              type="email"
+              validations="isEmail"
+              validationErrors={{
+                isEmail: "Email is not valid",
+                isRequired: "Email is required"
+              }}
+              handleChange={this.handleChange('email')}
+              required
+            />
+
+            <FormInput 
+              title="Password"
+              name="password"
+              type="password"
+              validations="minLength:6"
+              validationErrors={{
+                minLength: "Minimum password length is 6",
+                isRequired: "Password is required"
+              }}
+              handleChange={this.handleChange('password')}
+              required
+            />
+
+            <button 
+              type="submit" 
+              className="btn btn-success"
+              disabled={!this.state.canSubmit}
+            >Sign in</button>
+
+          </Formsy.Form>
+
         </div>
       </div>
     );
