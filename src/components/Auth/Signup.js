@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect }          from 'react-redux';
 import { signup }           from '../../actions/auth';
+import FormInput            from '../Layout/Form/Input';
 
 @connect(state => ({
   auth: state.auth
@@ -27,7 +28,8 @@ export default class Signup extends React.Component {
         lastName: '',
         password: '',
         passwordConfirmation: ''
-      }
+      },
+      canSubmit: false
     };
   }
 
@@ -40,10 +42,22 @@ export default class Signup extends React.Component {
   }
 
   handleSubmit = e => {
-    e.preventDefault();
     const router = this.context.router;
     const { user } = this.state;
+
     this.props.signup(user, router);
+  }
+
+  enableButton = () => {
+    this.setState({
+      canSubmit: true
+    });
+  }
+
+  disableButton = () => {
+    this.setState({
+      canSubmit: false
+    });
   }
 
   render() {
@@ -61,92 +75,84 @@ export default class Signup extends React.Component {
       <div className="row">
         <div className="col-md-6 col-md-offset-3">
 
-          <h2>Sign up</h2>
+          <h3>Sign up</h3>
 
           {error
             ? <div>{error.message}</div>
             : null}
 
-          <form onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="inputEmail" className="control-label">
-                Email
-              </label>
-              <input
-                className="form-control"
-                id="inputEmail"
-                onChange={this.handleChange('email')}
-                placeholder="Email"
-                type="email"
-                value={email}
-                required
-              />
-            </div>
+          <Formsy.Form 
+            onValidSubmit={this.handleSubmit} 
+            onValid={this.enableButton} 
+            onInvalid={this.disableButton}
+          >
 
-            <div className="form-group">
-              <label htmlFor="inputFirstName" className="control-label">
-                First name
-              </label>
-              <input
-                className="form-control"
-                id="inputFirstName"
-                onChange={this.handleChange('firstName')}
-                placeholder="First name"
-                type="text"
-                value={firstName}
-                required
-              />
-            </div>
+            <FormInput 
+              title="Email"
+              name="email"
+              type="email"
+              validations="isEmail"
+              validationErrors={{
+                isEmail: "Email is not valid",
+                isRequired: "Email is required"
+              }}
+              handleChange={this.handleChange('email')}
+              required
+            />
 
-            <div className="form-group">
-              <label htmlFor="inputLastName" className="control-label">
-                Last name
-              </label>
-              <input
-                className="form-control"
-                id="inputLastName"
-                onChange={this.handleChange('lastName')}
-                placeholder="Last name"
-                type="text"
-                value={lastName}
-                required
-              />
-            </div>
+            <FormInput 
+              title="First Name"
+              name="firstName"
+              validationErrors={{
+                isRequired: "First name is required"
+              }}
+              handleChange={this.handleChange('firstName')}
+              required
+            />
 
-            <div className="form-group">
-              <label htmlFor="inputPassword" className="control-label">
-                Password
-              </label>
-              <input
-                className="form-control"
-                id="inputPassword"
-                onChange={this.handleChange('password')}
-                placeholder="Password"
-                type="password"
-                value={password}
-                required
-              />
-            </div>
+            <FormInput 
+              title="Last Name"
+              name="lastName"
+              validationErrors={{
+                isRequired: "Last name is required"
+              }}
+              handleChange={this.handleChange('lastName')}
+              required
+            />
 
-            <div className="form-group">
-              <label htmlFor="inputPasswordConfirmation" className="control-label">
-                Password confirmation
-              </label>
-              <input
-                className="form-control"
-                id="inputPasswordConfirmation"
-                onChange={this.handleChange('passwordConfirmation')}
-                placeholder="Password confirmation"
-                type="password"
-                value={passwordConfirmation}
-                required
-              />
-            </div>
+            <FormInput 
+              title="Password"
+              name="password"
+              type="password"
+              validations="minLength:6"
+              validationErrors={{
+                minLength: "Minimum password length is 6",
+                isRequired: "Password is required"
+              }}
+              handleChange={this.handleChange('password')}
+              required
+            />
 
-            <button type="submit" className="btn btn-success">
-              Sign me up
-            </button>
-          </form>
+            <FormInput
+              title="Password Confirmation"
+              name="passwordConfirmation"
+              type="password"
+              validations="equalsField:password"
+              validationErrors={{
+                equalsField: "Passwords don't match",
+                isRequired: "Password confirmation is required"
+              }}
+              handleChange={this.handleChange('passwordConfirmation')}
+              required
+            />
+
+            <button 
+              type="submit" 
+              className="btn btn-primary"
+              disabled={!this.state.canSubmit}
+            >Sign me up</button>
+
+          </Formsy.Form>
           
         </div>
       </div>
