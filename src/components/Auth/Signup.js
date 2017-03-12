@@ -36,7 +36,7 @@ export default class Signup extends React.Component {
   handleChange = field => e => {
     e.preventDefault();
     
-    const value = e.target;
+    const value = e.target.value;
 
     this.setState((prevState) => ({
       user: {
