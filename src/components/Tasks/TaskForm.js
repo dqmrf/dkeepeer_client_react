@@ -5,7 +5,6 @@ import DateInput            from './DateInput';
 
 export default class TaskForm extends React.Component {
   static propTypes = {
-    task: PropTypes.object,
     onSave: PropTypes.func.isRequired
   };
 
@@ -13,17 +12,15 @@ export default class TaskForm extends React.Component {
     super(props);
     
     this.state = {
-      task: { ...props.task },
+      task: {
+        title: '',
+        description: '',
+        priority: '',
+        due_date: '',
+        completed: false
+      },
       startDate: Moment()
     };
-  }
-
-  componentWillReceiveProps(newProps) {
-    this.setState({
-      task: {
-        ...newProps.task
-      }
-    });
   }
 
   handleSave = e => {
@@ -34,20 +31,28 @@ export default class TaskForm extends React.Component {
 
   handleChange = field => e => {
     e.preventDefault();
-    this.setState({ task: {
-      ...this.state.task,
-      [field]: e.target.value
-    } });
+
+    const { value } = e.target;
+
+    this.setState((prevState) => ({
+      task: {
+        ...prevState.task,
+        [field]: value
+      }
+    }));
   }
 
   handleDateChange = e => {
-    this.setState({ 
+    const date = e._d;
+
+    this.setState((prevState) => ({
+      ...prevState,
       task: {
-        ...this.state.task,
-        due_date: e._d
+        ...prevState.task,
+        due_date: date
       },
       startDate: e
-    });
+    }));
   }
 
   render() {

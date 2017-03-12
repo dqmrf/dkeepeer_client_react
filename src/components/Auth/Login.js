@@ -39,10 +39,15 @@ export default class Login extends React.Component {
 
   handleChange = field => e => {
     e.preventDefault();
-    this.setState({ ['user']: {
-      ...this.state.user,
-      [field]: e.target.value
-    } });
+
+    const value = e.target;
+
+    this.setState((prevState) => ({
+      user: {
+        ...prevState.user,
+        [field]: value
+      }
+    }));
   }
 
   enableButton = () => {

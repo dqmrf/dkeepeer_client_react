@@ -37,13 +37,6 @@ export default class Dashboard extends React.Component {
     super(props);
 
     this.state = {
-      task: {
-        title: '',
-        description: '',
-        priority: '',
-        due_date: '',
-        completed: false
-      },
       tasks: this.getTasksState(props),
       checkedTasks: {
         active: [],
@@ -51,18 +44,21 @@ export default class Dashboard extends React.Component {
       }
     };
 
+    this.handleSave = this.handleSave.bind(this);
     this.handleDestroy = this.handleDestroy.bind(this);
     this.toggleCompleted = this.toggleCompleted.bind(this);
     this.updateTasksState = this.updateTasksState.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({
-      tasks: this.getTasksState(newProps),
-    });
+    if (this.props.tasks !== newProps.tasks) {
+      this.setState({
+        tasks: this.getTasksState(newProps),
+      });
+    }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { store } = this.context;
 
     return store.dispatch(fetchTasks());
@@ -79,10 +75,10 @@ export default class Dashboard extends React.Component {
   }
 
   toggleCompleted = (id, status, i) => {
-    const task = this.props.tasks.find(task => task.id === id);
+    const task = this.props.tasks
+      .find(task => task.id === id);
     const taskId = task.id;
-    const { checkedTasks } = this.state;
-    const { active, completed } = checkedTasks;
+    const { active, completed } = this.state.checkedTasks;
 
     let activeTasks = active;
     let completedTasks = completed;
@@ -105,11 +101,13 @@ export default class Dashboard extends React.Component {
     }
 
     if (updated()) {
-      this.setState({ checkedTasks: {
-        ...this.state.checkedTasks,
-        active: activeTasks,
-        completed: completedTasks,
-      } });
+      this.setState((prevState) => ({
+        checkedTasks: {
+          ...prevState.checkedTasks,
+          active: activeTasks,
+          completed: completedTasks
+        }
+      }));
     }
   }
 
@@ -119,10 +117,12 @@ export default class Dashboard extends React.Component {
     let stateField = isChecked ? 'checkedTasks' : 'tasks';
     let field = isActive ? 'active' : 'completed';
 
-    this.setState({ [stateField]: {
-      ...this.state[stateField],
-      [field]: tasks
-    } });
+    this.setState((prevState) => ({
+      [stateField]: {
+        ...prevState[stateField],
+        [field]: tasks
+      }
+    }));
   }
 
   handleSave = task => {
@@ -146,7 +146,7 @@ export default class Dashboard extends React.Component {
   }
 
   render() {
-    const { task, tasks, checkedTasks } = this.state;
+    const { tasks, checkedTasks } = this.state;
     const activeTasks = tasks.active;
     const completedTasks = tasks.completed;
     const { isFetched } = this.props;
@@ -181,7 +181,6 @@ export default class Dashboard extends React.Component {
 
         <div className="col-md-4">
           <TaskForm
-            task={task}
             onSave={this.handleSave}
           />
         </div>

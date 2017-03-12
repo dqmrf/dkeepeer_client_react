@@ -18,7 +18,7 @@ export default class SingleTask extends React.Component {
     store: React.PropTypes.object
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { store } = this.context;
     const { id } = this.props.params;
 

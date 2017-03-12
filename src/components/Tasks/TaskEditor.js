@@ -14,7 +14,6 @@ import DateInput                 from './DateInput';
 export default class TaskEditor extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
-    task: PropTypes.object.isRequired,
     updateTask: PropTypes.func.isRequired
   };
 
@@ -37,7 +36,7 @@ export default class TaskEditor extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { store } = this.context;
     const { id } = this.props.params;
 
@@ -49,34 +48,36 @@ export default class TaskEditor extends React.Component {
   componentWillReceiveProps(newProps) {
     const { task } = newProps;
 
-    this.setState({
-      task: {
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        due_date: task.due_date,
-        completed: task.completed
-      },
+    this.setState((prevState) => ({
+      ...prevState,
+      task: { ...task },
       startDate: Moment(task.due_date)
-    });
+    }));
   }
 
   handleChange = field => e => {
     e.preventDefault();
-    this.setState({ ['task']: {
-      ...this.state.task,
-      [field]: e.target.value
-    } });
+
+    const { value } = e.target;
+
+    this.setState((prevState) => ({
+      task: {
+        ...prevState.task,
+        [field]: value
+      }
+    }));
   }
 
   handleDateChange = e => {
-    this.setState({ 
+    const date = e._d;
+
+    this.setState((prevState) => ({
       task: {
-        ...this.state.task,
-        due_date: e._d
+        ...prevState.task,
+        due_date: date
       },
       startDate: e
-    });
+    }));
   }
 
   handleSave = e => {
