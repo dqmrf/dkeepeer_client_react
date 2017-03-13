@@ -18,7 +18,8 @@ const {
 const initialState = {
   token: null,
   fetching: false,
-  fetched: false
+  fetched: false,
+  error: null
 };
 
 export default (state = initialState, action) => {
@@ -41,8 +42,10 @@ export default (state = initialState, action) => {
     case LOGIN_SUCCESS: {
       return {
         ...state,
+        token: action.access_token,
         error: null,
-        token: action.access_token
+        fetching: true,
+        fetched: false
       };
     }
 

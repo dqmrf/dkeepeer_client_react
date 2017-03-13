@@ -3,7 +3,6 @@ import { connect }               from 'react-redux';
 import DatePicker                from 'react-datepicker'
 import Moment                    from 'moment';
 import { fetchTask, updateTask } from '../../actions/tasks';
-import DateInput                 from './DateInput';
 
 @connect(state => ({
   task: state.tasks.task
@@ -144,7 +143,6 @@ export default class TaskEditor extends React.Component {
                 Due date
               </label>
               <DatePicker
-                customInput={<DateInput />}
                 id="inputDueDate"
                 className="form-control"
                 minDate={Moment()}

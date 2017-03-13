@@ -2,7 +2,7 @@ import React from 'react';
 import Formsy, { Decorator as FormsyElement } from 'formsy-react';
 
 @FormsyElement()
-export default class FormInput extends React.Component {
+export default class FormTextarea extends React.Component {
   constructor(props) {
     super(props);
     
@@ -68,15 +68,9 @@ export default class FormInput extends React.Component {
     return newClassName;
   }
 
-  isCheckbox() {
-    return this.props.type === 'checkbox' ? true : false;
-  }
-
   changeValue(e) {
     const { name, handleChange, setValue } = this.props;
-    let newValue = e.currentTarget[
-      this.isCheckbox() ? 'checked' : 'value'
-    ];
+    let newValue = e.currentTarget.value;
 
     setValue(newValue);
     handleChange(name, {value: newValue});
@@ -93,14 +87,13 @@ export default class FormInput extends React.Component {
     return (
       <div className={className}>
         {this.getLabel()}
-        <input
-          checked={this.isCheckbox() && this.props.getValue() ? 'checked' : null}
+        <textarea
           className="form-control"
           name={this.props.name}
           onBlur={this.handleBlur}
           onChange={this.changeValue}
           placeholder={this.props.placeholder || null}
-          type={this.props.type || 'text'}
+          rows={this.props.rows || 3}
           value={this.props.value}
         />
         {errorMessages}

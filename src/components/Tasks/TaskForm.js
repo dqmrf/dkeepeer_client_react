@@ -1,8 +1,14 @@
-import React, { PropTypes } from 'react';
-import DatePicker           from 'react-datepicker'
-import Moment               from 'moment';
-import DateInput            from './DateInput';
+import React, { PropTypes }      from 'react';
+import { connect }               from 'react-redux';
+import Moment                    from 'moment';
+import FormInput                 from '../Layout/Form/Input';
+import FormTextarea              from '../Layout/Form/Textarea';
+import FormDatePicker            from '../Layout/Form/DatePicker';
+import extractPropertyFromObject from '../../utils/extractPropertyFromObject';
 
+@connect(state => ({
+  isFetched: state.tasks.fetched,
+}), {})
 export default class TaskForm extends React.Component {
   static propTypes = {
     onSave: PropTypes.func.isRequired
@@ -10,34 +16,66 @@ export default class TaskForm extends React.Component {
 
   constructor(props) {
     super(props);
-    
-    this.state = {
-      task: {
-        title: '',
-        description: '',
-        priority: '',
-        due_date: '',
-        completed: false
+
+    this.taskState = {
+      title: {
+        value: '',
+        blured: false,
       },
+      description: {
+        value: '',
+        blured: false,
+      },
+      priority: {
+        value: '',
+        blured: false,
+      },
+      due_date: {
+        value: '',
+        blured: false,
+      },
+      completed: {
+        value: false,
+        blured: false,
+      },
+    }
+
+    this.state = {
+      task: this.taskState,
       startDate: Moment()
     };
+
+    this.handleChange = this.handleChange.bind(this)
   }
 
-  handleSave = e => {
-    e.preventDefault();
+  handleSubmit = model => {
+    const { isFetched } = this.props;
     const { task } = this.state;
-    this.props.onSave(task);
+    const taskValues = extractPropertyFromObject(task, 'value');
+
+    this.props.onSave(taskValues);
+
+    if (isFetched) {
+      this.setState({
+        task: this.taskState,
+        startDate: Moment()
+      });
+      this.resetForm();
+    }
   }
 
-  handleChange = field => e => {
-    e.preventDefault();
+  resetForm() {
+    this.refs.form.reset();
+  }
 
-    const { value } = e.target;
-
+  handleChange = (field, values) => {
     this.setState((prevState) => ({
       task: {
         ...prevState.task,
-        [field]: value
+        [field]: {
+          ...prevState.task[field],
+          ...values
+        }
       }
     }));
   }
@@ -49,82 +87,93 @@ export default class TaskForm extends React.Component {
       ...prevState,
       task: {
         ...prevState.task,
-        due_date: date
+        due_date: {
+          ...prevState.task.due_date,
+          value: date
+        }
       },
       startDate: e
     }));
+  }
+
+  enableButton = () => {
+    this.setState({
+      canSubmit: true
+    });
+  }
+
+  disableButton = () => {
+    this.setState({
+      canSubmit: false
+    });
   }
 
   render() {
     const { title, description, priority, due_date } = this.state.task;
 
     return(
-      <form onSubmit={this.handleSave}>
-        <div className="form-group">
-          <label htmlFor="inputTitle" className="control-label">
-            Title
-          </label>
-          <input
-            className="form-control"
-            id="inputTitle"
-            onChange={this.handleChange('title')}
-            placeholder="Title"
-            type="text"
-            value={title}
-            required
-          />
-        </div>
+      <Formsy.Form 
+        ref='form'
+        onValidSubmit={this.handleSubmit} 
+        onValid={this.enableButton} 
+        onInvalid={this.disableButton}
+      >
 
-        <div className="form-group">
-          <label htmlFor="inputDescription" className="control-label">
-            Description
-          </label>
-          <textarea
-            className="form-control"
-            id="inputDescription"
-            onChange={this.handleChange('description')}
-            placeholder="Description goes here"
-            rows="6"
-            value={description}
-            required
-          />
-        </div>
+        <FormInput 
+          title="Title"
+          name="title"
+          value={title.value}
+          isBlured={title.blured}
+          handleChange={this.handleChange}
+          validationErrors={{
+            isRequired: "Title is required"
+          }}
+          required
+        />
 
-        <div className="form-group">
-          <label htmlFor="inputPriority" className="control-label">
-            Priority
-          </label>
-          <input
-            className="form-control"
-            id="inputPriority"
-            onChange={this.handleChange('priority')}
-            placeholder="Priority"
-            type="number"
-            value={priority}
-            required
-          />
-        </div>
+        <FormTextarea
+          title="Description"
+          name="description"
+          value={description.value}
+          isBlured={description.blured}
+          handleChange={this.handleChange}
+          validationErrors={{
+            isRequired: "Description is required"
+          }}
+          rows="4"
+          required
+        />
 
-        <div className="form-group">
-          <label htmlFor="inputDueDate" className="control-label">
-            Due date
-          </label>
-          <DatePicker
-            customInput={<DateInput />}
-            id="inputDueDate"
-            className="form-control"
-            minDate={Moment()}
-            selected={this.state.startDate}
-            placeholderText="Click to select a date"
-            onChange={this.handleDateChange}
-            fixedHeight
-          />
-        </div>
+        <FormInput
+          title="Priority"
+          name="priority"
+          type="number"
+          value={priority.value}
+          isBlured={priority.blured}
+          handleChange={this.handleChange}
+          validations="isNumeric"
+          validationErrors={{
+            isNumeric: "Priority must be an integer",
+            isRequired: "Priority is required"
+          }}
+          required
+        />
 
-        <button type="submit" className="btn btn-success">
-          Create Task
-        </button>
-      </form>
+        <FormDatePicker
+          title="Due date"
+          name="due_date"
+          minDate={Moment()}
+          selected={this.state.startDate}
+          handleChange={this.handleDateChange}
+          required
+        />
+
+        <button 
+          type="submit" 
+          className="btn btn-success"
+          disabled={!this.state.canSubmit}
+        >Create task</button>
+      </Formsy.Form>
     );
   }
 }

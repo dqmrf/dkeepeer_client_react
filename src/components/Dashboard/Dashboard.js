@@ -37,7 +37,7 @@ export default class Dashboard extends React.Component {
     super(props);
 
     this.state = {
-      tasks: this.getTasksState(props),
+      tasks: this.getInitialTasksState(props),
       checkedTasks: {
         active: [],
         completed: []
@@ -53,7 +53,7 @@ export default class Dashboard extends React.Component {
   componentWillReceiveProps(newProps) {
     if (this.props.tasks !== newProps.tasks) {
       this.setState({
-        tasks: this.getTasksState(newProps),
+        tasks: this.getInitialTasksState(newProps),
       });
     }
   }
@@ -64,7 +64,7 @@ export default class Dashboard extends React.Component {
     return store.dispatch(fetchTasks());
   }
 
-  getTasksState(props) {
+  getInitialTasksState(props) {
     const { tasks } = props;
 
     return {
@@ -129,19 +129,42 @@ export default class Dashboard extends React.Component {
     this.props.createTask(task);
   }
 
-  handleDestroy = id => {
+  handleDestroy = (id, params=false) => {
     switch (typeof id) {
       case 'number': {
         this.props.destroyTask(id);
+        this.spliceCheckedTasks(id, params);
         return;
       }
       case 'object': {
         this.props.destroyTasks(id);
+        this.spliceCheckedTasks(id, params);
         return;
       }
       default: {
         return false;
       }
+    }
+  }
+
+  // TODO: fix this function.
+  spliceCheckedTasks = (id, params=false) => {
+    if (params && params.isActive) {
+      const field = params.isActive ? 'active': 'completed';
+      let checkedTasks = this.state.checkedTasks[field];
+      let index = checkedTasks.indexOf(+id);
+
+      if (index !== -1) {
+        checkedTasks = checkedTasks.splice(index, -1);
+
+        this.setState((prevState) => ({
+          checkedTasks: {
+            ...prevState.checkedTasks,
+            [field]: checkedTasks
+          }
+        }));
+      }
+      
     }
   }
 

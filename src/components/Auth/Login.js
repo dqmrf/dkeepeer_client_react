@@ -1,13 +1,12 @@
-import React, { PropTypes } from 'react';
-import { connect }          from 'react-redux';
-import { login }            from '../../actions/auth';
-import FormInput            from '../Layout/Form/Input';
+import React, { PropTypes }      from 'react';
+import { connect }               from 'react-redux';
+import { login }                 from '../../actions/auth';
+import FormInput                 from '../Layout/Form/Input';
+import extractPropertyFromObject from '../../utils/extractPropertyFromObject';
 
 @connect(state => ({
   auth: state.auth
-}), {
-  login
-})
+}), { login })
 export default class Login extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
@@ -21,33 +20,47 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
     
-    this.state = {
-      user: {
-        email: '',
-        password: ''
+    this.userState = {
+      email: {
+        value: '',
+        blured: false
       },
+      password: {
+        value: '',
+        blured: false
+      }
+    }
+
+    this.state = {
+      user: this.userState,
       canSubmit: false
     };
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange = (field, values) => {
+    this.setState((prevState) => ({
+      user: {
+        ...prevState.user,
+        [field]: {
+          ...prevState.user[field],
+          ...values
+        }
+      }
+    }));
   }
 
   handleSubmit = model => {
     const { user } = this.state;
     const router = this.context.router;
+    const userValues = extractPropertyFromObject(user, 'value');
 
-    this.props.login(user, router);
+    this.props.login(userValues, router);
   }
 
-  handleChange = field => e => {
-    e.preventDefault();
-
-    const value = e.target.value;
-
-    this.setState((prevState) => ({
-      user: {
-        ...prevState.user,
-        [field]: value
-      }
-    }));
+  resetForm() {
+    this.refs.form.reset();
   }
 
   enableButton = () => {
@@ -64,8 +77,7 @@ export default class Login extends React.Component {
 
   render() {
     const { auth: { error } } = this.props;
-    const { user } = this.state;
-    const { email, password } = user;
+    const { email, password } = this.state.user;
 
     return(
       <div className="row">
@@ -78,6 +90,7 @@ export default class Login extends React.Component {
             : null}
 
           <Formsy.Form 
+            ref='form'
             onValidSubmit={this.handleSubmit} 
             onValid={this.enableButton} 
             onInvalid={this.disableButton}
@@ -87,12 +100,14 @@ export default class Login extends React.Component {
               title="Email"
               name="email"
               type="email"
+              value={email.value}
+              isBlured={email.blured}
               validations="isEmail"
               validationErrors={{
                 isEmail: "Email is not valid",
                 isRequired: "Email is required"
               }}
-              handleChange={this.handleChange('email')}
+              handleChange={this.handleChange}
               required
             />
 
@@ -100,12 +115,14 @@ export default class Login extends React.Component {
               title="Password"
               name="password"
               type="password"
+              value={password.value}
+              isBlured={password.blured}
               validations="minLength:6"
               validationErrors={{
                 minLength: "Minimum password length is 6",
                 isRequired: "Password is required"
               }}
-              handleChange={this.handleChange('password')}
+              handleChange={this.handleChange}
               required
             />
 

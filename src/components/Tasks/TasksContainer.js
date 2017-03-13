@@ -26,7 +26,6 @@ export default class TasksContainer extends React.Component {
 
   handleDestroy = id => {
     const { handleDestroy } = this.props.functions;
-
     handleDestroy(id);
   }
 
@@ -34,7 +33,7 @@ export default class TasksContainer extends React.Component {
     const { checkedTasks } = this.props;
     const { handleDestroy } = this.props.functions;
 
-    handleDestroy(checkedTasks);
+    handleDestroy(checkedTasks, {isActive: this.props.isActive});
   }
 
   handleCheckboxChange = (id, checked, index) => {
