@@ -7,7 +7,7 @@ export default class TasksContainer extends React.Component {
     tasks: PropTypes.array.isRequired,
     functions: PropTypes.object.isRequired,
     checkedTasks: PropTypes.array.isRequired,
-    isActive: PropTypes.bool.isRequired,
+    isActive: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -33,7 +33,7 @@ export default class TasksContainer extends React.Component {
     const { checkedTasks } = this.props;
     const { handleDestroy } = this.props.functions;
 
-    handleDestroy(checkedTasks, {isActive: this.props.isActive});
+    handleDestroy(checkedTasks);
   }
 
   handleCheckboxChange = (id, checked, index) => {

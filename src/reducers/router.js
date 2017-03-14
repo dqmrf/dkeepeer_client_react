@@ -1,7 +1,6 @@
 import Actions from '../constants/actions';
-const {
-  ROUTER_STATE_CHANGE
-} = Actions;
+
+const { ROUTER_STATE_CHANGE } = Actions;
 
 export default (state = null, action) => {
   switch (action.type) {

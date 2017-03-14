@@ -18,6 +18,7 @@ const {
   EMAIL_CONFIRMATION_FULFILLED,
   EMAIL_CONFIRMATION_REJECTED
 } = Actions;
+
 // i've changed port for a while, because of rails server can't listening on port 3000
 const baseUrl = 'http://localhost:3001';
 const headers = {'Content-Type': 'application/json'} 
@@ -34,6 +35,8 @@ function saveAuthToken(token) {
 
 export function signup(data, router) {
   return async (dispatch) => {
+    dispatch({ type: FETCHING_USER });
+
     try {
       const url = `${baseUrl}/api/users`;
       let body = prepareJson({user: data});
@@ -55,6 +58,8 @@ export function signup(data, router) {
 
 export function login(data, router) {
   return async (dispatch) => {
+    dispatch({ type: FETCHING_USER });
+
     try {
       const url = `${baseUrl}/oauth/token?client_id=482a0d9e4933364b5f66527be7416562aa49dfd94bbc2f7649559da4616449de&grant_type=password`;
       const { email, password } = data;
@@ -68,7 +73,10 @@ export function login(data, router) {
       if (res && res.status == 200 && access_token) {
         saveAuthToken(access_token);
 
-        dispatch({ type: LOGIN_SUCCESS, access_token });
+        dispatch({ type: LOGIN_SUCCESS, payload: {
+          token: access_token,
+          message: 'Login successfully'
+        } });
 
         const { query } = router.location;
         const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/';
@@ -94,7 +102,7 @@ export function logout(router) {
 export function checkConfirmationToken(token) {
   return async (dispatch, getState) => {
     dispatch({ type: FETCHING_USER });
-
+    
     try {
       const res = await axios.get(`${baseUrl}/api/users/${token}/confirm_email`);
 

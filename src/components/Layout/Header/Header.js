@@ -6,20 +6,28 @@ export default class Header extends React.Component {
     router: PropTypes.object.isRequired,
     loggedIn: PropTypes.bool,
     logout: PropTypes.func.isRequired
-  }
-
-  state = {
-    collapsed: true,
   };
+
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      collapsed: true,
+    };
+
+    this.toggleCollapse = this.toggleCollapse.bind(this);
+  }
 
   handleLogout = e => {
     const { logout, router } = this.props;
+
     e.preventDefault();
     logout(router);
   }
 
   toggleCollapse() {
     const collapsed = !this.state.collapsed;
+
     this.setState({collapsed});
   }
 
@@ -51,7 +59,7 @@ export default class Header extends React.Component {
         { 
           to: '/admin/dashboard', 
           title: 'Dashboard', 
-          onClick: this.toggleCollapse.bind(this) 
+          onClick: this.toggleCollapse
         }
       ];
       navItemsRight = [
@@ -69,11 +77,11 @@ export default class Header extends React.Component {
         { 
           to: '/login', 
           title: 'Login', 
-          onClick: this.toggleCollapse.bind(this) 
+          onClick: this.toggleCollapse
         },
         { to: '/signup', 
           title: 'Sign up', 
-          onClick: this.toggleCollapse.bind(this) 
+          onClick: this.toggleCollapse
         }
       ];
     }
@@ -97,28 +105,42 @@ export default class Header extends React.Component {
 
   render() {
     const { collapsed } = this.state;
+    const { authMsg, adminMsg } = this.props; 
     const navClass = collapsed ? "collapse" : "";
 
     return(
-      <nav className="navbar navbar-inverse" role="navigation">
-        <div className="container">
-          <div className="navbar-header">
-            <button 
-              type="button" 
-              className="navbar-toggle" 
-              onClick={this.toggleCollapse.bind(this)} 
-            >
-              <span className="sr-only">Toggle navigation</span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-            </button>
+      <header className="siteHeader">
+        <nav className="navbar navbar-inverse" role="navigation">
+          <div className="container">
+            <div className="navbar-header">
+              <button 
+                type="button" 
+                className="navbar-toggle" 
+                onClick={this.toggleCollapse} 
+              >
+                <span className="sr-only">Toggle navigation</span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+              </button>
+            </div>
+            <div className={"navbar-collapse " + navClass} id="bs-example-navbar-collapse-1">
+              {this.renderNavBar()}
+            </div>
           </div>
-          <div className={"navbar-collapse " + navClass} id="bs-example-navbar-collapse-1">
-            {this.renderNavBar()}
+        </nav>
+
+        { (authMsg || adminMsg) ? 
+
+          <div className="container">
+            <div className="site-notifications">
+              {authMsg ? <div className="alert alert-success">{authMsg}</div> : null}
+              {adminMsg ? <div className="alert alert-success">{adminMsg}</div> : null}
+            </div>
           </div>
-        </div>
-      </nav>
+
+        : null}
+      </header>
     );
   }
 }

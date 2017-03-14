@@ -51,11 +51,44 @@ export default class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (this.props.tasks !== newProps.tasks) {
+    const { tasks } = this.props;
+    const newTasks = newProps.tasks;
+    const { checkedTasks } = this.state;
+
+    let newCheckedTasks = checkedTasks;
+
+    if ((tasks !== newTasks)) {
+      const length = tasks.length;
+      const newLength = newTasks.length;
+      let diff;
+      
+      if (length > newLength) {
+        diff = tasks.diff(newTasks);
+
+        if (diff.length == 0) {return;}
+
+        diff.forEach((task, i) => {
+          let field = task.completed ? 'completed' : 'active';
+          let newCheckedTask = newCheckedTasks[field];
+          let index = newCheckedTask.indexOf(task.id);
+
+          if (index !== -1) {
+            newCheckedTask = newCheckedTask.splice(index, -1);
+          }
+        });
+      }
+
       this.setState({
         tasks: this.getInitialTasksState(newProps),
+        checkedTasks: newCheckedTasks
       });
     }
+  }
+
+  componentWillMount() {
+    Array.prototype.diff = function(a) {
+      return this.filter(function(i) {return a.indexOf(i) < 0;});
+    };
   }
 
   componentDidMount() {
@@ -129,42 +162,19 @@ export default class Dashboard extends React.Component {
     this.props.createTask(task);
   }
 
-  handleDestroy = (id, params=false) => {
-    switch (typeof id) {
+  handleDestroy = (ids) => {
+    switch (typeof ids) {
       case 'number': {
-        this.props.destroyTask(id);
-        this.spliceCheckedTasks(id, params);
+        this.props.destroyTask(ids);
         return;
       }
       case 'object': {
-        this.props.destroyTasks(id);
-        this.spliceCheckedTasks(id, params);
+        this.props.destroyTasks(ids);
         return;
       }
       default: {
         return false;
       }
-    }
-  }
-
-  // TODO: fix this function.
-  spliceCheckedTasks = (id, params=false) => {
-    if (params && params.isActive) {
-      const field = params.isActive ? 'active': 'completed';
-      let checkedTasks = this.state.checkedTasks[field];
-      let index = checkedTasks.indexOf(+id);
-
-      if (index !== -1) {
-        checkedTasks = checkedTasks.splice(index, -1);
-
-        this.setState((prevState) => ({
-          checkedTasks: {
-            ...prevState.checkedTasks,
-            [field]: checkedTasks
-          }
-        }));
-      }
-      
     }
   }
 

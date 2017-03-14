@@ -27,6 +27,7 @@ export default function reducer(state={
   tasks: [],
   fetching: false,
   fetched: false,
+  message: null,
   error: null
 }, action) {
 

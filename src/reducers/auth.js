@@ -19,6 +19,7 @@ const initialState = {
   token: null,
   fetching: false,
   fetched: false,
+  message: null,
   error: null
 };
 
@@ -27,7 +28,8 @@ export default (state = initialState, action) => {
     case ROUTER_STATE_CHANGE: {
       return {
         ...state,
-        error: null
+        error: null,
+        message: null,
       };
     }
 
@@ -35,15 +37,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         fetching: true,
-        fetched: false
+        fetched: false,
+        error: null,
+        message: null,
       };
     }
 
     case LOGIN_SUCCESS: {
+      const { token, message } = action.payload;
+
       return {
         ...state,
-        token: action.access_token,
+        token: token,
         error: null,
+        message: message,
         fetching: true,
         fetched: false
       };

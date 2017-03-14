@@ -76,7 +76,7 @@ export default class Login extends React.Component {
   }
 
   render() {
-    const { auth: { error } } = this.props;
+    // const { auth: { error } } = this.props;
     const { email, password } = this.state.user;
 
     return(
@@ -84,10 +84,6 @@ export default class Login extends React.Component {
         <div className="col-md-6 col-md-offset-3">
 
           <h3>Login</h3>
-
-          {error
-            ? <div>{error.message}</div>
-            : null}
 
           <Formsy.Form 
             ref='form'
