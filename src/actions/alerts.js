@@ -5,16 +5,20 @@ const {
   REMOVE_ALERT_ASYNC
 } = Actions;
 
-export function addAlertAsync(params) {
-  return function(dispatch) {
-    let { message, kind } = params;
+export function addAlertAsync (inputParams) {
+  if (!inputParams.message) { return; }
 
-    if (!message) { return; }
-    if (!kind) { kind = 'success'; }
+  let params = Object.assign({}, {
+    type: 'success',
+    delay: 4000
+  }, inputParams);
+
+  return function(dispatch) {
+    let { message, type, delay } = params;
 
     dispatch({ 
       type: ADD_ALERT_ASYNC,
-      kind: kind,
+      kind: type,
       message: message
     })
 
@@ -22,7 +26,7 @@ export function addAlertAsync(params) {
       dispatch({
         type: REMOVE_ALERT_ASYNC
       });
-    })
+    }, delay)
   }
 }
 

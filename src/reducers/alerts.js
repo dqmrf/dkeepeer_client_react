@@ -5,39 +5,31 @@ const {
   REMOVE_ALERT_ASYNC 
 } = Actions;
 
-const initialState = {
+export default (state={
   alertsAsync: []
-};
+}, action) => {
 
-export default (state = initialState, action) => {
   switch (action.type) {
     case ADD_ALERT_ASYNC: {
       const { message, kind } = action;
-      let alertsAsync = state.alertsAsync;
-
-      alertsAsync.push({
-        kind: kind, 
-        message: message
-      });
 
       return {
         ...state,
-        alertsAsync
+        alertsAsync: [ ...state.alertsAsync, { message, kind } ]
       }
     }
 
     case REMOVE_ALERT_ASYNC: {
-      let alertsAsync = state.alertsAsync;
-      
-      alertsAsync.shift();
+      let newAlertsAsync = state.alertsAsync.slice(1);
 
       return {
         ...state,
-        alertsAsync
+        alertsAsync: newAlertsAsync
       }
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 };

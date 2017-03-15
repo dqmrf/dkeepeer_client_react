@@ -3,6 +3,7 @@ import { connect }              from 'react-redux';
 import { bindActionCreators }   from 'redux';
 import Header                   from '../components/Layout/Header/Header';
 import { logout }               from '../actions/auth';
+import { addAlertAsync }        from '../actions/alerts';
 
 @connect(state => ({
   auth: state.auth,
@@ -12,13 +13,14 @@ import { logout }               from '../actions/auth';
 export default class App extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
+    alertsAsync: PropTypes.array.isRequired,
     children: PropTypes.element.isRequired,
     dispatch: PropTypes.func.isRequired,
-    error: PropTypes.string
   };
 
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
+    store: React.PropTypes.object
   };
 
   render() {

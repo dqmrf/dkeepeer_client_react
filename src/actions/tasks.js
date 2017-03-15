@@ -1,4 +1,5 @@
 import axios             from 'axios';
+import { addAlertAsync } from './alerts';
 import Actions           from '../constants/actions';
 import cookie            from '../utils/cookie';
 import getHeaders        from '../utils/getHeaders.js';
@@ -95,6 +96,10 @@ export function createTask(task) {
       if (res.status == 200) {
         const { data } = res;
         dispatch({type: CREATE_TASK_FULFILLED, payload: data})
+
+        addAlertAsync({
+          message: 'Task has been created'
+        })(dispatch);
       }
     } catch (error) {
       dispatch({ type: CREATE_TASK_REJECTED, payload: error });
@@ -147,6 +152,10 @@ export function destroyTask(id) {
       if (res.status == 200) {
         const { id } = res.data;
         dispatch({type: DESTROY_TASK_FULFILLED, payload: id})
+
+        addAlertAsync({
+          message: 'Task has been destroyed'
+        })(dispatch);
       }
     } catch (error) {
       dispatch({ type: DESTROY_TASK_REJECTED, payload: error });
@@ -177,7 +186,13 @@ export function destroyTasks(ids) {
 
       if (res.status == 200) {
         const { ids } = res.data;
+        const { length } = ids;
+
         dispatch({type: DESTROY_TASKS_FULFILLED, payload: ids});
+
+        addAlertAsync({
+          message: `${length} task${length > 1 ? 's' : '' } ha${length > 1 ? 've' : 's'} been destroyed`
+        })(dispatch);
       }
 
     } catch (error) {
