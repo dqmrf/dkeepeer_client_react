@@ -105,8 +105,19 @@ export default class Header extends React.Component {
 
   render() {
     const { collapsed } = this.state;
-    const { authMsg, adminMsg } = this.props; 
+    const { alertsAsync } = this.props; 
     const navClass = collapsed ? "collapse" : "";
+    let alertsContainer;
+
+    if (alertsAsync && alertsAsync.length) {
+      alertsContainer = alertsAsync.map((alert, i) => {
+        return(
+          <div className={`alert alert-${alert.kind}`} key={i}>
+            {alert.message}
+          </div>
+        );
+      });
+    }
 
     return(
       <header className="siteHeader">
@@ -130,12 +141,11 @@ export default class Header extends React.Component {
           </div>
         </nav>
 
-        { (authMsg || adminMsg) ? 
+        { (alertsAsync && alertsAsync.length) ? 
 
           <div className="container">
             <div className="site-notifications">
-              {authMsg ? <div className="alert alert-success">{authMsg}</div> : null}
-              {adminMsg ? <div className="alert alert-success">{adminMsg}</div> : null}
+              {alertsContainer || null}
             </div>
           </div>
 

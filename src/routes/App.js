@@ -3,26 +3,28 @@ import { connect }              from 'react-redux';
 import { bindActionCreators }   from 'redux';
 import Header                   from '../components/Layout/Header/Header';
 import { logout }               from '../actions/auth';
+import { addAlertAsync }        from '../actions/alerts';
 
 @connect(state => ({
   auth: state.auth,
-  adminMsg: state.tasks.message,
+  alertsAsync: state.alerts.alertsAsync,
   router: state.router
 }))
 export default class App extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
+    alertsAsync: PropTypes.array.isRequired,
     children: PropTypes.element.isRequired,
     dispatch: PropTypes.func.isRequired,
-    error: PropTypes.string
-  }
+  };
 
   static contextTypes = {
-    router: PropTypes.object
-  }
+    router: PropTypes.object,
+    store: React.PropTypes.object
+  };
 
   render() {
-    const { auth, dispatch, adminMsg } = this.props;
+    const { auth, dispatch } = this.props;
     const authMsg = auth.message;
 
     return (
@@ -30,8 +32,7 @@ export default class App extends React.Component {
         <Header
           loggedIn={!!auth.token}
           router={this.context.router}
-          authMsg={authMsg}
-          adminMsg={adminMsg}
+          alertsAsync={this.props.alertsAsync}
           {...bindActionCreators({ logout }, dispatch)}
         />
         

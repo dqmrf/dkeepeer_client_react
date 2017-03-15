@@ -27,9 +27,9 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case ROUTER_STATE_CHANGE: {
       return {
-        ...state,
+        ...state/*,
         error: null,
-        message: null,
+        message: null,*/
       };
     }
 

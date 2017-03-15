@@ -73,7 +73,7 @@ export default class Dashboard extends React.Component {
           let index = newCheckedTask.indexOf(task.id);
 
           if (index !== -1) {
-            newCheckedTask = newCheckedTask.splice(index, -1);
+            newCheckedTasks[field] = newCheckedTask.splice(index, -1);
           }
         });
       }
