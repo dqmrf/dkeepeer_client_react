@@ -1,4 +1,5 @@
 import axios             from 'axios';
+import { addAlertAsync } from './alerts';
 import Actions           from '../constants/actions';
 import cookie            from '../utils/cookie';
 import getHeaders        from '../utils/getHeaders.js';
@@ -57,37 +58,43 @@ export function signup(data, router) {
 }
 
 export function login(data, router) {
-  return async (dispatch) => {
+  return /*async*/ (dispatch) => {
     dispatch({ type: FETCHING_USER });
 
-    try {
-      const url = `${baseUrl}/oauth/token?client_id=482a0d9e4933364b5f66527be7416562aa49dfd94bbc2f7649559da4616449de&grant_type=password`;
-      const { email, password } = data;
-      let body = prepareJson({
-        email: email,
-        password: password
+    const url = `${baseUrl}/oauth/token?client_id=482a0d9e4933364b5f66527be7416562aa49dfd94bbc2f7649559da4616449de&grant_type=password`;
+    const { email, password } = data;
+    let body = prepareJson({
+      email: email,
+      password: password
+    });
+
+    axios.post(url, body, { headers: headers })
+      .then(function (res) {
+        const { access_token } = res.data;
+
+        if (res && res.status == 200 && access_token) {
+          saveAuthToken(access_token);
+
+          dispatch({ type: LOGIN_SUCCESS, payload: {
+            token: access_token
+          } });
+
+          const { query } = router.location;
+          const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/';
+
+          router.push(redirectTo);
+
+          addAlertAsync({
+            message: 'Login successfully'
+          })(dispatch);
+        }
+      })
+      .catch(function (e) {
+        dispatch({
+          type: LOGIN_FAILURE,
+          error: Error('Unknown error occured :-(. Please, try again later.')
+        });
       });
-      const res = await axios.post(url, body, { headers: headers });
-      const { access_token } = res.data;
-
-      if (res && res.status == 200 && access_token) {
-        saveAuthToken(access_token);
-
-        dispatch({ type: LOGIN_SUCCESS, payload: {
-          token: access_token,
-          message: 'Login successfully'
-        } });
-
-        const { query } = router.location;
-        const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/';
-        router.push(redirectTo);
-      }
-    } catch (e) {
-      dispatch({
-        type: LOGIN_FAILURE,
-        error: Error('Unknown error occured :-(. Please, try again later.')
-      });
-    }
   };
 }
 

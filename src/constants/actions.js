@@ -3,6 +3,9 @@ import keyMirror from 'key-mirror';
 export default keyMirror({
   ROUTER_STATE_CHANGE: null,
 
+  ADD_ALERT_ASYNC: null,
+  REMOVE_ALERT_ASYNC: null,
+
   FETCHING_USER: null,
   FETCHING_TASK: null,
 
