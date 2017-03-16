@@ -3,6 +3,7 @@ import DatePicker                from 'react-datepicker'
 import Formsy, 
   { Decorator as FormsyElement } from 'formsy-react';
 import DateInput                 from './DatePicker/DateInput';
+import './DatePicker.styl';
 
 @FormsyElement()
 export default class FormDatePicker extends React.Component {

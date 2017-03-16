@@ -194,7 +194,7 @@ export default class Dashboard extends React.Component {
       <div className={`row ${isFetched ? '' : ' fetching'}`}>
 
         <div className="col-md-8">
-          <h2>Tasks List</h2>
+          <h4>==/ TASKS LIST \==</h4>
 
           <div>
             <TasksContainer
