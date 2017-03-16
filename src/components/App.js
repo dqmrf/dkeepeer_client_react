@@ -2,8 +2,10 @@ import React, { PropTypes }     from 'react';
 import { connect }              from 'react-redux';
 import { bindActionCreators }   from 'redux';
 import Header                   from '../components/Layout/Header/Header';
+import Footer                   from '../components/Layout/Footer/Footer';
 import { logout }               from '../actions/auth';
 import { addAlertAsync }        from '../actions/alerts';
+import './App.styl'
 
 @connect(state => ({
   auth: state.auth,
@@ -28,7 +30,7 @@ export default class App extends React.Component {
     const authMsg = auth.message;
 
     return (
-      <div>
+      <div className="site-wrapper">
         <Header
           loggedIn={!!auth.token}
           router={this.context.router}
@@ -36,9 +38,13 @@ export default class App extends React.Component {
           {...bindActionCreators({ logout }, dispatch)}
         />
         
-        <div className="container">
-          {React.cloneElement(this.props.children, { dispatch: dispatch })}
+        <div className="site-container">
+          <div className="container">
+            {React.cloneElement(this.props.children, { dispatch: dispatch })}
+          </div>
         </div>
+
+        <Footer />
       </div>
     );
   }

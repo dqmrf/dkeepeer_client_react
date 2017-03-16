@@ -2,7 +2,7 @@ import React                 from 'react';
 import { 
   Route,
   IndexRedirect }            from 'react-router';
-import App                   from './App';
+import App                   from '../components/App';
 import RequireAuth           from './RequireAuth';
 import AdminScope            from './scopes/AdminScope';
 import GuestScope            from './scopes/GuestScope';
@@ -12,7 +12,7 @@ import EmailConfirmation     from '../components/Auth/EmailConfirmation';
 import Dashboard             from '../components/Dashboard/Dashboard';
 import SingleTask            from '../components/Tasks/SingleTask';
 import TaskEditor            from '../components/Tasks/TaskEditor';
-import NotFound              from '../components/NotFound';
+import NotFound              from '../components/Errors/NotFound';
 import { routerStateChange } from '../actions/router';
 
 const routes = (

@@ -120,7 +120,7 @@ export default class Header extends React.Component {
     }
 
     return(
-      <header className="siteHeader">
+      <header className="site-header">
         <nav className="navbar navbar-inverse" role="navigation">
           <div className="container">
             <div className="navbar-header">

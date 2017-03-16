@@ -38,11 +38,12 @@ export default class TaskForm extends React.Component {
         value: false,
         blured: false,
       },
-    }
+    };
 
     this.state = {
       task: this.taskState,
-      startDate: Moment()
+      startDate: Moment(),
+      canSubmit: false
     };
 
     this.handleChange = this.handleChange.bind(this)
