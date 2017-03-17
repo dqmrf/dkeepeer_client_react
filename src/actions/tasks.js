@@ -1,4 +1,5 @@
 import axios             from 'axios';
+import config            from 'app-config';
 import { addAlertAsync } from './alerts';
 import Actions           from '../constants/actions';
 import cookie            from '../utils/cookie';
@@ -28,7 +29,8 @@ const {
   DESTROY_TASKS_REJECTED
 } = Actions;
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = config.baseUrl;
+const apiEndpoint = `${baseUrl}/api/tasks`;
 
 export function fetchTasks() {
   return async (dispatch, getState) => {
@@ -41,7 +43,7 @@ export function fetchTasks() {
 
       let tasks = [];
       const headers = getHeaders(token);
-      const res = await axios.get(`${baseUrl}/api/tasks`, { headers });
+      const res = await axios.get(apiEndpoint, { headers });
 
       if (res.status == 200) {
         tasks = res.data.tasks;
@@ -64,10 +66,11 @@ export function fetchTask(id) {
       if (!token) { return; }
 
       const headers = getHeaders(token);
-      const res = await axios.get(`${baseUrl}/api/tasks/${id}`, { headers });
+      const res = await axios.get(`${apiEndpoint}/${id}`, { headers });
 
       if (res.status == 200) {
         const { data } = res;
+
         dispatch({type: FETCH_TASK_FULFILLED, payload: data})
       }
       
@@ -94,7 +97,7 @@ export function createTask(task) {
       headers = getHeaders(token);
       headers['Content-Type'] = 'application/json';
 
-      const res = await axios.post(`${baseUrl}/api/tasks`, body, { headers: headers });
+      const res = await axios.post(apiEndpoint, body, { headers: headers });
 
       if (res.status == 200) {
         const { data } = res;
@@ -127,7 +130,7 @@ export function updateTask(id, task) {
       headers = getHeaders(token);
       headers['Content-Type'] = 'application/json';
 
-      const res = await axios.put(`${baseUrl}/api/tasks/${id}`, body, { headers: headers });
+      const res = await axios.put(`${apiEndpoint}/${id}`, body, { headers: headers });
 
       if (res.status == 200) {
         dispatch({ type: UPDATE_TASK_FULFILLED, payload: task });
@@ -158,10 +161,11 @@ export function destroyTask(id) {
 
       headers['Content-Type'] = 'application/json';
 
-      const res = await axios.delete(`${baseUrl}/api/tasks/${id}`, { headers: headers });
+      const res = await axios.delete(`${apiEndpoint}/${id}`, { headers: headers });
 
       if (res.status == 200) {
         const { id } = res.data;
+
         dispatch({type: DESTROY_TASK_FULFILLED, payload: id})
 
         addAlertAsync({
@@ -188,7 +192,7 @@ export function destroyTasks(ids) {
 
       headers['Content-Type'] = 'application/json';
 
-      const res = await axios.delete(`${baseUrl}/api/tasks/batch_destroy`, 
+      const res = await axios.delete(`${apiEndpoint}/batch_destroy`, 
         { 
           params: body,
           headers: headers 

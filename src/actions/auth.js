@@ -1,4 +1,5 @@
 import axios             from 'axios';
+import config            from 'app-config';
 import { addAlertAsync } from './alerts';
 import Actions           from '../constants/actions';
 import cookie            from '../utils/cookie';
@@ -20,8 +21,8 @@ const {
   EMAIL_CONFIRMATION_REJECTED
 } = Actions;
 
-// i've changed port for a while, because of rails server can't listening on port 3000
-const baseUrl = 'http://localhost:3001';
+const baseUrl = config.baseUrl;
+const apiEndpoint = `${baseUrl}/api`;
 const headers = {'Content-Type': 'application/json'} 
 
 function saveAuthToken(token) {
@@ -38,18 +39,19 @@ export function signup(data, router) {
   return (dispatch) => {
     dispatch({ type: FETCHING_USER });
 
-    const url = `${baseUrl}/api/users`;
-    let body = prepareJson({user: data});
+    const url = `${apiEndpoint}/users`;
+    const body = prepareJson({user: data});
 
     axios.post(url, body, { headers: headers })
       .then((res) => {
         if (res && res.status == 200) {
           const { query } = router.location;
           const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/login';
+
           router.push(redirectTo);
 
           addAlertAsync({
-            message: 'Registration successfully'
+            message: 'Registration successfully! Please confirm your email addres.'
           })(dispatch);
         }
       })
@@ -66,9 +68,9 @@ export function login(data, router) {
   return (dispatch) => {
     dispatch({ type: FETCHING_USER });
 
-    const url = `${baseUrl}/oauth/token?client_id=482a0d9e4933364b5f66527be7416562aa49dfd94bbc2f7649559da4616449de&grant_type=password`;
+    const url = `${baseUrl}/oauth/token?client_id=${config.clientId}&grant_type=password`;
     const { email, password } = data;
-    let body = prepareJson({
+    const body = prepareJson({
       email: email,
       password: password
     });
@@ -77,15 +79,14 @@ export function login(data, router) {
       .then((res) => {
         if (res && res.status == 200) {
           const { access_token } = res.data;
+          const { query } = router.location;
+          const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/';
 
           saveAuthToken(access_token);
 
           dispatch({ type: LOGIN_SUCCESS, payload: {
             token: access_token
           } });
-
-          const { query } = router.location;
-          const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/';
 
           router.push(redirectTo);
 
@@ -114,19 +115,21 @@ export function logout(router) {
   };
 }
 
-export function checkConfirmationToken(token) {
-  return async (dispatch, getState) => {
+export function checkConfirmationToken(token, router) {
+  return async (dispatch) => {
     dispatch({ type: FETCHING_USER });
     
-    axios.get(`${baseUrl}/api/users/${token}/confirm_email`)
+    axios.get(`${apiEndpoint}/users/${token}/confirm_email`)
       .then((res) => {
         if (res.status == 200) {
           const { message } = res.data;
+
           dispatch({ type: EMAIL_CONFIRMATION_FULFILLED, payload: message });
         }
       })
       .catch(function (e) {
         dispatch({ type: EMAIL_CONFIRMATION_REJECTED, e });
+        router.push(...redirectBackAfter('/login', router.location));
       });
   }
 }

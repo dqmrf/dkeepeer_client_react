@@ -27,7 +27,6 @@ export default function reducer(state={
   tasks: [],
   fetching: false,
   fetched: false,
-  message: null,
   error: null
 }, action) {
 
@@ -69,6 +68,7 @@ export default function reducer(state={
       const { id } = action.payload;
       const newTasks = [...state.tasks];
       const tasksToUpdate = newTasks.findIndex(t => t.id === id);
+      
       newTasks[tasksToUpdate] = action.payload;
 
       return {

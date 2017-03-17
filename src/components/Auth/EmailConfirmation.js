@@ -1,16 +1,14 @@
 import React, { PropTypes }       from 'react';
 import { connect }                from 'react-redux';
+import { Link }                   from 'react-router';
 import { checkConfirmationToken } from '../../actions/auth';
+import './EmailConfirmation.styl';
 
 @connect(state => ({
-  auth: state.auth,
   isFetched: state.auth.fetched,
-}), {
-  checkConfirmationToken,
-})
+}), { checkConfirmationToken })
 export default class EmailConfirmation extends React.Component {
   static propTypes = {
-    auth: PropTypes.object.isRequired,
     checkConfirmationToken: PropTypes.func.isRequired
   };
 
@@ -38,10 +36,20 @@ export default class EmailConfirmation extends React.Component {
     return(
       <div className="row">
         <div className="col-md-6 col-md-offset-3">
+          <div className="confirmation-page">
           { isFetched ? 
-            <h1>Your email address has successfully confirmed.</h1> :
+            <div>
+              <h1>Your email address has successfully confirmed.</h1>
+              <div className="button-wrapper">
+                <Link to="/login" title="Login" className="btn btn-success btn-lg btn-block">
+                  Login
+                </Link>
+              </div>
+            </div>
+            :
             <h1>Loading...</h1>
           }
+          </div>
         </div>
       </div>
     );

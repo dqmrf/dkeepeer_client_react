@@ -1,0 +1,5 @@
+{
+  "baseUrl": "http://localhost:3001",
+  "apiEndpoint": "http://localhost:3001/api",
+  "clientId": "482a0d9e4933364b5f66527be7416562aa49dfd94bbc2f7649559da4616449de"
+}

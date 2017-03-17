@@ -112,10 +112,8 @@ export default class Dashboard extends React.Component {
       .find(task => task.id === id);
     const taskId = task.id;
     const { active, completed } = this.state.checkedTasks;
-
     let activeTasks = active;
     let completedTasks = completed;
-
     let updated = this.props.updateTask.bind(this, id, {
       ...task,
       completed: !status
@@ -194,22 +192,33 @@ export default class Dashboard extends React.Component {
       <div className={`row ${isFetched ? '' : ' fetching'}`}>
 
         <div className="col-md-8">
+
           <h4>==/ TASKS LIST \==</h4>
 
-          <div>
-            <TasksContainer
-              tasks={activeTasks}
-              checkedTasks={checkedTasks.active}
-              isActive={true}
-              functions={functions}
-            />
-            <TasksContainer
-              tasks={completedTasks}
-              checkedTasks={checkedTasks.completed}
-              isActive={false}
-              functions={functions}
-            />
-          </div>
+          {(tasks.all && tasks.all.length) ?
+
+            <div>
+              <div className="tasks-containers-overlap">
+                <TasksContainer
+                  tasks={activeTasks}
+                  checkedTasks={checkedTasks.active}
+                  isActive={true}
+                  functions={functions}
+                />
+                <TasksContainer
+                  tasks={completedTasks}
+                  checkedTasks={checkedTasks.completed}
+                  isActive={false}
+                  functions={functions}
+                />
+              </div>
+            </div>
+          :
+            <div className="alert alert-info">
+              <h3 className="no-task-existence-title">There are no tasks yet!</h3>
+            </div>
+          }
+
         </div>
 
         <div className="col-md-4">

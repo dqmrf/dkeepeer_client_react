@@ -99,10 +99,6 @@ export default class Signup extends React.Component {
 
           <h3>Sign up</h3>
 
-          {error
-            ? <div>{error.message}</div>
-            : null}
-
           <Formsy.Form 
             ref='form'
             onValidSubmit={this.handleSubmit} 

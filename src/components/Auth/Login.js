@@ -76,7 +76,6 @@ export default class Login extends React.Component {
   }
 
   render() {
-    // const { auth: { error } } = this.props;
     const { email, password } = this.state.user;
 
     return(
