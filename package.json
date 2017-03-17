@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "webpack.config.js",
   "scripts": {
-    "start": "NODE_ENV=production PORT=8080 pm2 start ./server.js",
+    "start": "NODE_ENV=production PORT=8080 node ./server.js",
+    "start-pm2": "NODE_ENV=production PORT=8080 pm2 start ./server.js",
     "build": "webpack -p --env=prod --progress --profile --colors",
     "dev": "NODE_ENV=development ./node_modules/.bin/webpack-dev-server --env=dev --progress --profile --colors --content-base src --inline --hot"
   },
