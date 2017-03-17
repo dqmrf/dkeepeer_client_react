@@ -1,5 +1,5 @@
 {
-  "baseUrl": "https://black--hole.herokuapp.com",
-  "apiEndpoint": "https://black--hole.herokuapp.com/api",
+  "baseUrl": "https://dkeeper-api-server.herokuapp.com",
+  "apiEndpoint": "https://dkeeper-api-server.herokuapp.com/api",
   "clientId": "b515c7761101cc777b687ab6c0a855d36123c77ad5d828480c9d7da82e50c416"
 }
