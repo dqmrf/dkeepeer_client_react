@@ -1,18 +1,19 @@
 {
-  "name": "react-cli",
-  "version": "0.0.0",
+  "name": "black--hole",
+  "version": "1.0.0",
   "author": "Misha Pelykh",
   "description": "Client app built using ReactJS & Redux technologies",
   "license": "MIT",
   "main": "webpack.config.js",
   "scripts": {
-    "start": "node ./server.js",
-    "start-pm2": "NODE_ENV=production PORT=8080 pm2 start ./server.js",
+    "start": "NODE_ENV=production node ./server.js",
+    "start-pm": "NODE_ENV=production pm2 start ./server.js",
     "build": "webpack -p --env=prod --progress --profile --colors",
-    "dev": "NODE_ENV=development ./node_modules/.bin/webpack-dev-server --env=dev --progress --profile --colors --content-base src --inline --hot"
+    "dev": "NODE_ENV=development webpack-dev-server --env=dev --content-base src --inline --hot --progress --profile --colors"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.6",
+    "axios": "^0.15.3",
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-react-html-attrs": "^2.0.0",
@@ -61,7 +62,6 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "axios": "^0.15.3",
     "body-parser": "^1.17.1",
     "express": "^4.14.1",
     "pm2": "^2.3.0"
