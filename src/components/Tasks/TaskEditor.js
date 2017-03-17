@@ -112,19 +112,10 @@ export default class TaskEditor extends React.Component {
 
   handleSubmit = model => {
     const { id } = this.props.params;
-    const { isFetched } = this.props;
     const { task } = this.state;
     const taskValues = extractPropertyFromObject(task, 'value');
 
     this.props.updateTask(id, taskValues);
-
-    if (isFetched) {
-      this.setState({
-        task: this.taskState,
-        startDate: Moment()
-      });
-      this.resetForm();
-    }
   }
 
   handleDateChange = e => {
@@ -216,6 +207,7 @@ export default class TaskEditor extends React.Component {
               title="Due date"
               name="due_date"
               minDate={Moment()}
+              value={this.state.startDate}
               selected={this.state.startDate}
               handleChange={this.handleDateChange}
               required

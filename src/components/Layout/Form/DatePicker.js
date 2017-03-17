@@ -17,8 +17,8 @@ export default class FormDatePicker extends React.Component {
     const { handleChange, setValue } = this.props;
     const date = e._d;
 
-    handleChange(e);
     setValue(date);
+    handleChange(e);
   }
 
   getLabel() {
@@ -45,6 +45,7 @@ export default class FormDatePicker extends React.Component {
           onChange={this.changeValue}
           placeholderText={this.props.placeholderText || null}
           selected={this.props.selected}
+          value={this.props.value}
           fixedHeight
         />
       </div>

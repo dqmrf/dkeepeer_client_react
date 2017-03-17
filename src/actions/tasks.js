@@ -39,9 +39,9 @@ export function fetchTasks() {
 
       if (!token) { return; }
 
+      let tasks = [];
       const headers = getHeaders(token);
       const res = await axios.get(`${baseUrl}/api/tasks`, { headers });
-      let tasks = []
 
       if (res.status == 200) {
         tasks = res.data.tasks;
@@ -86,9 +86,12 @@ export function createTask(task) {
 
       if (!token) { return; }
 
-      const body = prepareJson({task: task});
-      let headers = getHeaders(token);
+      let body, headers;
+      let { due_date } = task;
 
+      task.due_date = fixDateBeforeStringify(due_date);
+      body = prepareJson({task: task});
+      headers = getHeaders(token);
       headers['Content-Type'] = 'application/json';
 
       const res = await axios.post(`${baseUrl}/api/tasks`, body, { headers: headers });
@@ -116,15 +119,23 @@ export function updateTask(id, task) {
 
       if (!token) { return; }
 
-      let body = prepareJson({task: task});
-      let headers = getHeaders(token);
+      let body, headers;
+      let { due_date } = task;
 
+      task.due_date = fixDateBeforeStringify(due_date);
+      body = prepareJson({task: task});
+      headers = getHeaders(token);
       headers['Content-Type'] = 'application/json';
 
       const res = await axios.put(`${baseUrl}/api/tasks/${id}`, body, { headers: headers });
 
       if (res.status == 200) {
         dispatch({ type: UPDATE_TASK_FULFILLED, payload: task });
+
+        addAlertAsync({
+          message: 'Task successfully updated'
+        })(dispatch);
+
         return true;
       }
     } catch (error) {
@@ -199,4 +210,10 @@ export function destroyTasks(ids) {
       dispatch({ type: DESTROY_TASKS_REJECTED, payload: error });
     }
   }
+}
+
+function fixDateBeforeStringify(date) {
+  if (typeof date !== 'object') { return date; }
+  date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
+  return date;
 }
