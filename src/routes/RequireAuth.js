@@ -1,5 +1,6 @@
-import React       from 'react';
-import { connect } from 'react-redux';
+import React             from 'react';
+import { connect }       from 'react-redux';
+import redirectBackAfter from '../utils/redirectBackAfter';
 
 export default function (ComposedComponent, req=true) {
   class Authentication extends React.Component {
@@ -10,11 +11,13 @@ export default function (ComposedComponent, req=true) {
     componentWillMount() {
       const { router } = this.context;
       const { authenticated } = this.props;
-      
+      let push = (path) => 
+        router.push(...redirectBackAfter(path, router.location));
+
       if (req && !authenticated) {
-        router.push('/login');
+        push('/login');
       } else if (!req && authenticated) {
-        router.push('/admin');
+        push('/admin');
       }
     }
 

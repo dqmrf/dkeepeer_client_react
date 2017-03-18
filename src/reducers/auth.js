@@ -49,13 +49,13 @@ export default (state = initialState, action) => {
         fetching: true,
         fetched: false
       };
-    }
+    } 
 
-    case SIGNUP_FAILURE:
-    case LOGIN_FAILURE: {
+    case EMAIL_CONFIRMATION_FULFILLED: {
       return {
         ...state,
-        error: action.error
+        fetching: false,
+        fetched: true
       };
     }
 
@@ -63,11 +63,12 @@ export default (state = initialState, action) => {
       return { ...initialState };
     }
 
-    case EMAIL_CONFIRMATION_FULFILLED: {
+    case SIGNUP_FAILURE:
+    case LOGIN_FAILURE:
+    case EMAIL_CONFIRMATION_REJECTED: {
       return {
         ...state,
-        fetching: false,
-        fetched: true
+        error: action.payload
       };
     }
 

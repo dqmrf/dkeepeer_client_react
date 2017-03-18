@@ -3,7 +3,7 @@ import config            from 'app-config';
 import { addAlertAsync } from './alerts';
 import Actions           from '../constants/actions';
 import cookie            from '../utils/cookie';
-import getHeaders        from '../utils/getHeaders.js';
+import ErrorThrower      from '../utils/errorThrower';
 import prepareJson       from '../utils/prepareJson';
 import redirectBackAfter from '../utils/redirectBackAfter';
 
@@ -23,7 +23,7 @@ const {
 
 const baseUrl = config.baseUrl;
 const apiEndpoint = `${baseUrl}/api`;
-const headers = {'Content-Type': 'application/json'} 
+const headers = { 'Content-Type': 'application/json' }; 
 
 function saveAuthToken(token) {
   const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
@@ -41,9 +41,12 @@ export function signup(data, router) {
 
     const url = `${apiEndpoint}/users`;
     const body = prepareJson({user: data});
+    let errHandler = new ErrorThrower(dispatch, { 
+      type: SIGNUP_FAILURE
+    });
 
-    axios.post(url, body, { headers: headers })
-      .then((res) => {
+    axios.post(url, body, { headers })
+      .then(res => {
         if (res && res.status == 200) {
           const { query } = router.location;
           const redirectTo = (query && query.redirectTo) ? query.redirectTo : '/login';
@@ -54,13 +57,10 @@ export function signup(data, router) {
             message: 'Registration successfully! Please confirm your email addres.'
           })(dispatch);
         }
-      })
-      .catch(function (e) {
-        dispatch({
-          type: SIGNUP_FAILURE,
-          error: Error('Unknown error occured :-(. Please, try again later.')
-        });
-      });
+      }, (err => {
+        return errHandler.handleError(err);
+      }))
+      .catch(err => errHandler.handleUnknownError(err));
   }
 }
 
@@ -74,8 +74,11 @@ export function login(data, router) {
       email: email,
       password: password
     });
+    let errHandler = new ErrorThrower(dispatch, { 
+      type: LOGIN_FAILURE
+    });
 
-    axios.post(url, body, { headers: headers })
+    axios.post(url, body, { headers })
       .then((res) => {
         if (res && res.status == 200) {
           const { access_token } = res.data;
@@ -94,14 +97,38 @@ export function login(data, router) {
             message: 'Login successfully'
           })(dispatch);
         }
-      })
-      .catch(function (e) {
-        dispatch({
-          type: LOGIN_FAILURE,
-          error: Error('Unknown error occured :-(. Please, try again later.')
-        });
-      });
+      }, (err => {
+        return errHandler.handleError(err);
+      }))
+      .catch(err => errHandler.handleUnknownError(err));
   };
+}
+
+export function checkConfirmationToken(token, router) {
+  return async (dispatch) => {
+    dispatch({ type: FETCHING_USER });
+    
+    let errHandler = new ErrorThrower(dispatch, { 
+      type: EMAIL_CONFIRMATION_REJECTED
+    });
+
+    axios.get(`${apiEndpoint}/users/${token}/confirm_email`)
+      .then(res => {
+        if (res.status == 200) {
+          const { message } = res.data;
+
+          dispatch({ 
+            type: EMAIL_CONFIRMATION_FULFILLED, 
+            payload: message 
+          });
+        }
+      }, (err => {
+        return errHandler.handleError(err, () => {
+          router.push(...redirectBackAfter('/login', router.location));
+        });
+      }))
+      .catch(err => errHandler.handleUnknownError(err));
+  }
 }
 
 export function logout(router) {
@@ -113,23 +140,4 @@ export function logout(router) {
     })(dispatch);
     router.push(...redirectBackAfter('/login', router.location));
   };
-}
-
-export function checkConfirmationToken(token, router) {
-  return async (dispatch) => {
-    dispatch({ type: FETCHING_USER });
-    
-    axios.get(`${apiEndpoint}/users/${token}/confirm_email`)
-      .then((res) => {
-        if (res.status == 200) {
-          const { message } = res.data;
-
-          dispatch({ type: EMAIL_CONFIRMATION_FULFILLED, payload: message });
-        }
-      })
-      .catch(function (e) {
-        dispatch({ type: EMAIL_CONFIRMATION_REJECTED, e });
-        router.push(...redirectBackAfter('/login', router.location));
-      });
-  }
 }

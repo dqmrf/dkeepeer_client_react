@@ -30,6 +30,7 @@ export default class Dashboard extends React.Component {
   };
 
   static contextTypes = {
+    router: React.PropTypes.object,
     store: React.PropTypes.object
   };
 
@@ -92,9 +93,9 @@ export default class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    const { store } = this.context;
+    const { store, router } = this.context;
 
-    return store.dispatch(fetchTasks());
+    return store.dispatch(fetchTasks(router));
   }
 
   getInitialTasksState(props) {

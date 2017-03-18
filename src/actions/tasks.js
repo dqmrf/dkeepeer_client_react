@@ -3,7 +3,8 @@ import config            from 'app-config';
 import { addAlertAsync } from './alerts';
 import Actions           from '../constants/actions';
 import cookie            from '../utils/cookie';
-import getHeaders        from '../utils/getHeaders.js';
+import ErrorThrower      from '../utils/errorThrower';
+import getHeaders        from '../utils/getHeaders';
 import prepareJson       from '../utils/prepareJson';
 import redirectBackAfter from '../utils/redirectBackAfter';
 
@@ -32,173 +33,198 @@ const {
 const baseUrl = config.baseUrl;
 const apiEndpoint = `${baseUrl}/api/tasks`;
 
-export function fetchTasks() {
-  return async (dispatch, getState) => {
+export function fetchTasks(router) {
+  return (dispatch, getState) => {
     dispatch({ type: FETCHING_TASK });
 
-    try {
-      const { auth: { token } } = getState();
+    const { auth: { token } } = getState();
 
-      if (!token) { return; }
+    if (!token) { return; }
 
-      let tasks = [];
-      const headers = getHeaders(token);
-      const res = await axios.get(apiEndpoint, { headers });
+    let tasks = [];
+    let headers = getHeaders(token);
+    let errHandler = new ErrorThrower(dispatch, { 
+      type: FETCH_TASKS_REJECTED
+    });
 
-      if (res.status == 200) {
-        tasks = res.data.tasks;
-      }
+    axios.get(apiEndpoint, { headers })
+      .then(res => {
+        if (res.status == 200) {
+          tasks = res.data.tasks;
+        }
 
-      dispatch({type: FETCH_TASKS_FULFILLED, payload: tasks})
-    } catch (error) {
-      dispatch({ type: FETCH_TASKS_REJECTED, payload: error });
-    }
+        dispatch({ type: FETCH_TASKS_FULFILLED, payload: tasks })
+
+      }, (err => {
+        return errHandler.handleError(err, () => {
+          const { status } = err.response;
+
+          if (status == 401) {
+            cookie.unset('token');
+            router.push(...redirectBackAfter('/login', router.location));
+          }
+        });
+      }))
+      .catch(err => errHandler.handleUnknownError(err));
   };
 }
 
 export function fetchTask(id) {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     dispatch({ type: FETCHING_TASK });
 
-    try {
-      const { auth: { token } } = getState();
+    const { auth: { token } } = getState();
 
-      if (!token) { return; }
+    if (!token) { return; }
 
-      const headers = getHeaders(token);
-      const res = await axios.get(`${apiEndpoint}/${id}`, { headers });
+    const headers = getHeaders(token);
+    let errHandler = new ErrorThrower(dispatch, { 
+      type: FETCH_TASK_REJECTED
+    });
 
-      if (res.status == 200) {
-        const { data } = res;
+    axios.get(`${apiEndpoint}/${id}`, { headers })
+      .then(res => {
+        if (res.status == 200) {
+          const { data } = res;
 
-        dispatch({type: FETCH_TASK_FULFILLED, payload: data})
-      }
-      
-    } catch (error) {
-      dispatch({ type: FETCH_TASK_REJECTED, payload: error });
-    }
+          dispatch({type: FETCH_TASK_FULFILLED, payload: data})
+        }
+      }, (err => {
+        return errHandler.handleError(err);
+      }))
+      .catch(err => errHandler.handleUnknownError(err));
   };
 }
 
 export function createTask(task) {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     dispatch({ type: FETCHING_TASK });
 
-    try {
-      const { auth: { token } } = getState();
+    const { auth: { token } } = getState();
 
-      if (!token) { return; }
+    if (!token) { return; }
 
-      let body, headers;
-      let { due_date } = task;
+    let body, headers;
+    let { due_date } = task;
+    let errHandler = new ErrorThrower(dispatch, { 
+      type: CREATE_TASK_REJECTED
+    });
 
-      task.due_date = fixDateBeforeStringify(due_date);
-      body = prepareJson({task: task});
-      headers = getHeaders(token);
-      headers['Content-Type'] = 'application/json';
+    task.due_date = fixDateBeforeStringify(due_date);
+    body = prepareJson({task: task});
+    headers = getHeaders(token);
+    headers['Content-Type'] = 'application/json';
 
-      const res = await axios.post(apiEndpoint, body, { headers: headers });
+    axios.post(apiEndpoint, body, { headers: headers })
+      .then(res => {
+        if (res.status == 200) {
+          const { data } = res;
 
-      if (res.status == 200) {
-        const { data } = res;
-        dispatch({type: CREATE_TASK_FULFILLED, payload: data})
+          dispatch({type: CREATE_TASK_FULFILLED, payload: data})
 
-        addAlertAsync({
-          message: 'Task has been created'
-        })(dispatch);
-      }
-    } catch (error) {
-      dispatch({ type: CREATE_TASK_REJECTED, payload: error });
-    }
+          addAlertAsync({
+            message: 'Task has been created'
+          })(dispatch);
+        }
+      }, (err => {
+        return errHandler.handleError(err);
+      }))
+      .catch(err => errHandler.handleUnknownError(err));
   }
 }
 
 export function updateTask(id, task) {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     dispatch({ type: FETCHING_TASK });
 
-    try {
-      const { auth: { token } } = getState();
+    const { auth: { token } } = getState();
 
-      if (!token) { return; }
+    if (!token) { return; }
 
-      let body, headers;
-      let { due_date } = task;
+    let body, headers;
+    let { due_date } = task;
+    let errHandler = new ErrorThrower(dispatch, { 
+      type: UPDATE_TASK_REJECTED
+    });
 
-      task.due_date = fixDateBeforeStringify(due_date);
-      body = prepareJson({task: task});
-      headers = getHeaders(token);
-      headers['Content-Type'] = 'application/json';
+    task.due_date = fixDateBeforeStringify(due_date);
+    body = prepareJson({task: task});
+    headers = getHeaders(token);
+    headers['Content-Type'] = 'application/json';
 
-      const res = await axios.put(`${apiEndpoint}/${id}`, body, { headers: headers });
+    axios.put(`${apiEndpoint}/${id}`, body, { headers: headers })
+      .then(res => {
+        if (res.status == 200) {
+          dispatch({ type: UPDATE_TASK_FULFILLED, payload: task });
 
-      if (res.status == 200) {
-        dispatch({ type: UPDATE_TASK_FULFILLED, payload: task });
+          addAlertAsync({
+            message: 'Task successfully updated'
+          })(dispatch);
 
-        addAlertAsync({
-          message: 'Task successfully updated'
-        })(dispatch);
-
-        return true;
-      }
-    } catch (error) {
-      dispatch({ type: UPDATE_TASK_REJECTED, payload: error });
-      return false;
-    }
+          return true;
+        }
+      }, (err => {
+        return errHandler.handleError(err);
+      }))
+      .catch(err => errHandler.handleUnknownError(err));
   }
 }
 
 export function destroyTask(id) {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     dispatch({ type: FETCHING_TASK });
     
-    try {
-      const { auth: { token } } = getState();
+    const { auth: { token } } = getState();
 
-      if (!token) { return; }
+    if (!token) { return; }
 
-      let headers = getHeaders(token);
+    let headers = getHeaders(token);
+    let errHandler = new ErrorThrower(dispatch, { 
+      type: DESTROY_TASK_REJECTED
+    });
 
-      headers['Content-Type'] = 'application/json';
+    headers['Content-Type'] = 'application/json';
 
-      const res = await axios.delete(`${apiEndpoint}/${id}`, { headers: headers });
+    axios.delete(`${apiEndpoint}/${id}`, { headers: headers })
+      .then(res => {
+        if (res.status == 200) {
+          const { id } = res.data;
 
-      if (res.status == 200) {
-        const { id } = res.data;
+          dispatch({type: DESTROY_TASK_FULFILLED, payload: id})
 
-        dispatch({type: DESTROY_TASK_FULFILLED, payload: id})
-
-        addAlertAsync({
-          message: 'Task has been destroyed'
-        })(dispatch);
-      }
-    } catch (error) {
-      dispatch({ type: DESTROY_TASK_REJECTED, payload: error });
-    }
+          addAlertAsync({
+            message: 'Task has been destroyed'
+          })(dispatch);
+        }
+      }, (err => {
+        return errHandler.handleError(err);
+      }))
+      .catch(err => errHandler.handleUnknownError(err));
   }
 }
 
 export function destroyTasks(ids) {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     dispatch({ type: FETCHING_TASK });
 
-    try {
-      const { auth: { token } } = getState();
+    const { auth: { token } } = getState();
 
-      if (!token) { return; }
+    if (!token) { return; }
 
-      let body = { tasks: ids }
-      let headers = getHeaders(token);
+    let body = { tasks: ids }
+    let headers = getHeaders(token);
+    let errHandler = new ErrorThrower(dispatch, { 
+      type: DESTROY_TASKS_REJECTED
+    });
+    
+    headers['Content-Type'] = 'application/json';
 
-      headers['Content-Type'] = 'application/json';
-
-      const res = await axios.delete(`${apiEndpoint}/batch_destroy`, 
-        { 
-          params: body,
-          headers: headers 
-        }
-      );
-
+    axios.delete(`${apiEndpoint}/batch_destroy`, 
+      { 
+        params: body,
+        headers: headers 
+      }
+    ).then(res => {
       if (res.status == 200) {
         const { ids } = res.data;
         const { length } = ids;
@@ -209,10 +235,10 @@ export function destroyTasks(ids) {
           message: `${length} task${length > 1 ? 's' : '' } ha${length > 1 ? 've' : 's'} been destroyed`
         })(dispatch);
       }
-
-    } catch (error) {
-      dispatch({ type: DESTROY_TASKS_REJECTED, payload: error });
-    }
+    }, (err => {
+      return errHandler.handleError(err);
+    }))
+    .catch(err => errHandler.handleUnknownError(err));
   }
 }
 
