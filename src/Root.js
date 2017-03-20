@@ -5,11 +5,7 @@ import cookie                from './utils/cookie';
 import routes                from './routes';
 import { createRedux }       from './utils/redux';
 
-const store = createRedux({ 
-  auth: { 
-    token: cookie.get('token') || ''
-  } 
-});
+const store = createRedux();
 
 export default class Root extends React.Component {
   static propTypes = {

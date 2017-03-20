@@ -37,7 +37,7 @@ function saveAuthToken(token) {
 
 export function signup(data, router) {
   return (dispatch) => {
-    dispatch({ type: FETCHING_USER });
+    dispatch({ type: FETCHING_USER, payload: 'signup' });
 
     const url = `${apiEndpoint}/users`;
     const body = prepareJson({user: data});
@@ -66,7 +66,7 @@ export function signup(data, router) {
 
 export function login(data, router) {
   return (dispatch) => {
-    dispatch({ type: FETCHING_USER });
+    dispatch({ type: FETCHING_USER, payload: 'signin' });
 
     const url = `${baseUrl}/oauth/token?client_id=${config.clientId}&grant_type=password`;
     const { email, password } = data;
@@ -106,7 +106,7 @@ export function login(data, router) {
 
 export function checkConfirmationToken(token, router) {
   return async (dispatch) => {
-    dispatch({ type: FETCHING_USER });
+    dispatch({ type: FETCHING_USER, payload: 'confirmation' });
     
     let errHandler = new ErrorThrower(dispatch, { 
       type: EMAIL_CONFIRMATION_REJECTED

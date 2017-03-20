@@ -5,11 +5,13 @@ import FormInput                 from '../Layout/Form/Input';
 import extractPropertyFromObject from '../../utils/extractPropertyFromObject';
 
 @connect(state => ({
-  auth: state.auth
+  fetching: state.auth.fetching.signin,
+  fetched: state.auth.fetched.signin
 }), { login })
 export default class Login extends React.Component {
   static propTypes = {
-    auth: PropTypes.object.isRequired,
+    fetching: PropTypes.bool.isRequired,
+    fetched: PropTypes.bool.isRequired,
     login: PropTypes.func.isRequired
   };
 
@@ -77,6 +79,7 @@ export default class Login extends React.Component {
 
   render() {
     const { email, password } = this.state.user;
+    const { fetching, fetched } = this.props;
 
     return(
       <div className="row">
@@ -124,9 +127,17 @@ export default class Login extends React.Component {
             <button 
               type="submit" 
               className="btn btn-success"
-              disabled={!this.state.canSubmit}
-            >Sign in</button>
-
+              disabled={!this.state.canSubmit || fetching}
+            >
+              { fetching ?
+                <span className="spin-wrap">
+                  <span>Sign in</span>
+                  <i class="fa fa-circle-o-notch fa-spin"></i>
+                </span> 
+                : 'Sign in'
+              }
+            </button>
+            
           </Formsy.Form>
 
         </div>

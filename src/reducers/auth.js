@@ -7,18 +7,28 @@ const {
 
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  LOGOUT,
-
+  
   SIGNUP_FAILURE,
+  SIGNUP_SUCCESS,
 
   EMAIL_CONFIRMATION_FULFILLED,
-  EMAIL_CONFIRMATION_REJECTED
+  EMAIL_CONFIRMATION_REJECTED,
+
+  LOGOUT,
 } = Actions;
 
 const initialState = {
   token: null,
-  fetching: false,
-  fetched: false,
+  fetching: {
+    signin: false,
+    signup: false,
+    confirmation: false
+  },
+  fetched: {
+    signin: true,
+    signup: true,
+    confirmation: true
+  },
   error: null
 };
 
@@ -31,10 +41,18 @@ export default (state = initialState, action) => {
     }
 
     case FETCHING_USER: {
+      const field = action.payload;
+
       return {
         ...state,
-        fetching: true,
-        fetched: false,
+        fetching: {
+          ...state.fetching,
+          [field]: true
+        },
+        fetched: {
+          ...state.fetched,
+          [field]: false
+        },
         error: null,
       };
     }
@@ -45,31 +63,95 @@ export default (state = initialState, action) => {
       return {
         ...state,
         token: token,
+        fetching: {
+          ...state.fetching,
+          signin: false
+        },
+        fetched: {
+          ...state.fetched,
+          signin: true
+        },
         error: null,
-        fetching: true,
-        fetched: false
       };
     } 
+
+    case LOGIN_FAILURE: {
+      return {
+        ...state,
+        fetching: {
+          ...state.fetching,
+          signin: false
+        },
+        fetched: {
+          ...state.fetched,
+          signin: true
+        },
+        error: action.payload
+      };
+    }
+
+    case SIGNUP_SUCCESS: {
+      return {
+        ...state,
+        fetching: {
+          ...state.fetching,
+          signup: false
+        },
+        fetched: {
+          ...state.fetched,
+          signup: true
+        },
+        error: null,
+      };
+    } 
+
+    case SIGNUP_FAILURE: {
+      return {
+        ...state,
+        fetching: {
+          ...state.fetching,
+          signup: false
+        },
+        fetched: {
+          ...state.fetched,
+          signup: true
+        },
+        error: action.payload
+      };
+    }
 
     case EMAIL_CONFIRMATION_FULFILLED: {
       return {
         ...state,
-        fetching: false,
-        fetched: true
+        fetching: {
+          ...state.fetching,
+          confirmation: false
+        },
+        fetched: {
+          ...state.fetched,
+          confirmation: true
+        },
+        error: action.payload
+      };
+    }
+
+    case EMAIL_CONFIRMATION_REJECTED: {
+      return {
+        ...state,
+        fetching: {
+          ...state.fetching,
+          confirmation: false
+        },
+        fetched: {
+          ...state.fetched,
+          confirmation: true
+        },
+        error: action.payload
       };
     }
 
     case LOGOUT: {
       return { ...initialState };
-    }
-
-    case SIGNUP_FAILURE:
-    case LOGIN_FAILURE:
-    case EMAIL_CONFIRMATION_REJECTED: {
-      return {
-        ...state,
-        error: action.payload
-      };
     }
 
     default: {

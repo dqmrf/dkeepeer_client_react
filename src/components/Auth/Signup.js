@@ -5,11 +5,13 @@ import FormInput                 from '../Layout/Form/Input';
 import extractPropertyFromObject from '../../utils/extractPropertyFromObject';
 
 @connect(state => ({
-  auth: state.auth
+  fetching: state.auth.fetching.signup,
+  fetched: state.auth.fetched.signup
 }), { signup })
 export default class Signup extends React.Component {
   static propTypes = {
-    auth: PropTypes.object.isRequired,
+    fetching: PropTypes.bool.isRequired,
+    fetched: PropTypes.bool.isRequired,
     signup: PropTypes.func.isRequired
   };
 
@@ -84,7 +86,7 @@ export default class Signup extends React.Component {
   }
 
   render() {
-    const { auth: { error } } = this.props;
+    const { fetching, fetched } = this.props;
     const { 
       email, 
       firstName, 
@@ -178,8 +180,16 @@ export default class Signup extends React.Component {
             <button 
               type="submit" 
               className="btn btn-primary"
-              disabled={!this.state.canSubmit}
-            >Sign me up</button>
+              disabled={!this.state.canSubmit || fetching}
+            >
+              { fetching ?
+                <span className="spin-wrap">
+                  <span>Sign me up</span>
+                  <i class="fa fa-circle-o-notch fa-spin"></i>
+                </span> 
+                : 'Sign me up'
+              }
+            </button>
 
           </Formsy.Form>
           

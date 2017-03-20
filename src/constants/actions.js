@@ -7,19 +7,19 @@ export default keyMirror({
   REMOVE_ALERT_ASYNC: null,
 
   FETCHING_USER: null,
-  FETCHING_TASK: null,
 
-  SIGNUP: null,
   SIGNUP_SUCCESS: null,
   SIGNUP_FAILURE: null,
 
-  LOGIN: null,
   LOGIN_SUCCESS: null,
   LOGIN_FAILURE: null,
+  
   LOGOUT: null,
 
   EMAIL_CONFIRMATION_FULFILLED: null,
   EMAIL_CONFIRMATION_REJECTED: null,
+
+  FETCHING_TASK: null,
 
   FETCH_TASKS_FULFILLED: null,
   FETCH_TASKS_REJECTED: null,

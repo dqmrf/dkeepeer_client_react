@@ -33,6 +33,7 @@
     "eslint-plugin-react": "^6.10.0",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.10.0",
+    "font-awesome-stylus": "^4.7.0",
     "formsy-react": "^0.19.2",
     "html-webpack-plugin": "^2.28.0",
     "key-mirror": "^1.0.1",

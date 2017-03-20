@@ -5,10 +5,13 @@ import { checkConfirmationToken } from '../../actions/auth';
 import './EmailConfirmation.styl';
 
 @connect(state => ({
-  isFetched: state.auth.fetched,
+  fetching: state.auth.fetching.confirmation,
+  fetched: state.auth.fetched.confirmation
 }), { checkConfirmationToken })
 export default class EmailConfirmation extends React.Component {
   static propTypes = {
+    fetching: PropTypes.bool.isRequired,
+    fetched: PropTypes.bool.isRequired,
     checkConfirmationToken: PropTypes.func.isRequired
   };
 
@@ -31,13 +34,15 @@ export default class EmailConfirmation extends React.Component {
   }
 
   render() {
-    let { isFetched } = this.props;
+    const { fetching } = this.props;
 
     return(
       <div className="row">
         <div className="col-md-6 col-md-offset-3">
           <div className="confirmation-page">
-          { isFetched ? 
+          { fetching ? 
+            <h1>Loading...</h1> 
+            :
             <div>
               <h1>Your email address has successfully confirmed.</h1>
               <div className="button-wrapper">
@@ -45,9 +50,7 @@ export default class EmailConfirmation extends React.Component {
                   Login
                 </Link>
               </div>
-            </div>
-            :
-            <h1>Loading...</h1>
+            </div>            
           }
           </div>
         </div>

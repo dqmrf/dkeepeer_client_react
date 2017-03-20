@@ -7,8 +7,8 @@ import { ROUTER_STATE_CHANGE } from '../constants/actions';
 import reducer                 from '../reducers';
 
 export function createRedux(initialState) {
-  const middleware = [thunk];
-  let reduxDevtools = undefined;
+  let middleware = [thunk];
+  let reduxDevtools;
 
   if (process.env.NODE_ENV !== 'production') {
     reduxDevtools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();

@@ -9,7 +9,6 @@ export default class ErrorThrower {
   handleError(err, callback) {
     if (callback && this._performCallback(callback) === false) { return; }
 
-    const { type } = this.params;
     const { response } = err;
     const { 
       error,
@@ -28,33 +27,41 @@ export default class ErrorThrower {
       errors.forEach((error, i) => {
         this._throwAlert(error)
       });
-      this._emit(type, errors);
+      this._emit(errors);
     } else if (errorFiltered) {
       this._throwAlert(errorFiltered);
-      this._emit(type, errorFiltered);
+      this._emit(errorFiltered);
     } else {
       return Promise.reject(err);
     }
   }
 
   handleUnknownError(err, callback) {
-    const { dispatch, params: { type } } = this;
+    const { dispatch, params: { type, payload } } = this;
     let errorMsg = 'Unknown error occured! Please, try again later.';
 
     this._performCallback(callback);
+    this._emit(err);
+    this._throwAlert(errorMsg);
+  }
+
+  _emit(error) {
+    const { dispatch, params: { type, payload } } = this;
+
+    let resPayload = { error };
 
     if (dispatch && type) {
-      dispatch({ type: type, error: err || null });
+      if (payload) {
+        for (let i in payload) {
+          resPayload[i] = payload[i];
+        }
+      }
+
+      type ? dispatch({ type, payload: resPayload }) : null;
     }
-
-    this._throwAlert(errorMsg, dispatch);
   }
 
-  _emit(type, payload) {
-    type ? this.dispatch({ type, payload }) : null;
-  }
-
-  _throwAlert(message, dispatch) {
+  _throwAlert(message) {
     addAlertAsync({
       message, 
       type: 'danger',
