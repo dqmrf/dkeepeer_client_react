@@ -43,7 +43,7 @@ export default class TaskForm extends React.Component {
     this.state = {
       task: this.taskState,
       startDate: Moment(),
-      canSubmit: false
+      canSubmit: true
     };
 
     this.handleChange = this.handleChange.bind(this)

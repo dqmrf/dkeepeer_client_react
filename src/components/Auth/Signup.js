@@ -45,7 +45,7 @@ export default class Signup extends React.Component {
 
     this.state = {
       user: this.userState,
-      canSubmit: false
+      canSubmit: true
     };
 
     this.handleChange = this.handleChange.bind(this);
