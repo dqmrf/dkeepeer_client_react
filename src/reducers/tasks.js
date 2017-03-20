@@ -25,76 +25,141 @@ const {
 export default function reducer(state={
   task: {},
   tasks: [],
-  fetching: false,
-  fetched: false,
+  fetching: {
+    tasks: false,
+    task: false,
+    create: false,
+    update: false,
+    destroy: false
+  },
+  fetched: {
+    tasks: false,
+    task: false,
+    create: false,
+    update: false,
+    destroy: false
+  },
   error: null
 }, action) {
 
   switch (action.type) {
     case FETCHING_TASK: {
+      const field = action.payload;
+
       return {
         ...state,
-        fetching: true,
-        fetched: false
+        fetching: {
+          ...state.fetching,
+          [field]: true
+        },
+        fetched: {
+          ...state.fetched,
+          [field]: false
+        },
+        error: null,
       };
     }
 
     case FETCH_TASKS_FULFILLED: {
       return {
         ...state,
-        fetching: false,
-        fetched: true,
-        tasks: action.payload
-      }
+        tasks: action.payload,
+        fetching: {
+          ...state.fetching,
+          tasks: false
+        },
+        fetched: {
+          ...state.fetched,
+          tasks: true
+        },
+        error: null
+      };
     }
 
     case FETCH_TASK_FULFILLED: {
       return {
         ...state,
-        fetching: false,
-        fetched: true,
-        task: action.payload
-      }
+        task: action.payload,
+        fetching: {
+          ...state.fetching,
+          task: false
+        },
+        fetched: {
+          ...state.fetched,
+          task: true
+        },
+        error: null
+      };
     }
 
     case CREATE_TASK_FULFILLED: {
       return {
         ...state,
-        tasks: [action.payload, ...state.tasks]
-      }
+        tasks: [ action.payload, ...state.tasks ],
+        fetching: {
+          ...state.fetching,
+          create: false
+        },
+        fetched: {
+          ...state.fetched,
+          create: true
+        },
+        error: null
+      };
     }
 
     case UPDATE_TASK_FULFILLED: {
       const { id } = action.payload;
-      const newTasks = [...state.tasks];
+      const newTasks = [ ...state.tasks ];
       const tasksToUpdate = newTasks.findIndex(t => t.id === id);
       
       newTasks[tasksToUpdate] = action.payload;
 
       return {
         ...state,
-        fetching: false,
-        fetched: true,
         tasks: newTasks,
-      }
+        fetching: {
+          ...state.fetching,
+          update: false
+        },
+        fetched: {
+          ...state.fetched,
+          update: true
+        },
+        error: null
+      };
     }
 
     case DESTROY_TASK_FULFILLED: {
       return {
         ...state,
-        fetching: false,
-        fetched: true,
         tasks: state.tasks.filter(t => t.id !== action.payload),
-      }
+        fetching: {
+          ...state.fetching,
+          destroy: false
+        },
+        fetched: {
+          ...state.fetched,
+          destroy: true
+        },
+        error: null
+      };
     }
 
     case DESTROY_TASKS_FULFILLED: {
       return {
         ...state,
-        fetching: false,
-        fetched: true,
         tasks: state.tasks.filter(t => !action.payload.includes(t.id+'')),
-      }
+        fetching: {
+          ...state.fetching,
+          destroy: false
+        },
+        fetched: {
+          ...state.fetched,
+          destroy: true
+        },
+        error: null
+      };
     }
 
     case FETCH_TASK_REJECTED:
@@ -103,7 +168,20 @@ export default function reducer(state={
     case UPDATE_TASK_REJECTED:
     case DESTROY_TASK_REJECTED:
     case DESTROY_TASKS_REJECTED: {
-      return {...state, fetching: false, error: action.payload}
+      const { field, error } = action.payload;
+
+      return {
+        ...state,
+        fetching: {
+          ...state.fetching,
+          [field]: false
+        },
+        fetched: {
+          ...state.fetched,
+          [field]: true
+        },
+        error,
+      };
     }
 
     default: {

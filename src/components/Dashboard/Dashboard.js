@@ -12,7 +12,8 @@ import './Dashboard.styl';
 
 @connect(state => ({
   tasks: state.tasks.tasks || [],
-  isFetched: state.tasks.fetched,
+  fetching: state.tasks.fetching.tasks,
+  fetched: state.tasks.fetched.tasks
 }), {
   fetchTasks,
   createTask,
@@ -23,6 +24,8 @@ import './Dashboard.styl';
 export default class Dashboard extends React.Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
+    fetching: PropTypes.bool.isRequired,
+    fetched: PropTypes.bool.isRequired,
     fetchTasks: PropTypes.func.isRequired,
     createTask: PropTypes.func.isRequired,
     destroyTask: PropTypes.func.isRequired,
@@ -181,7 +184,7 @@ export default class Dashboard extends React.Component {
     const { tasks, checkedTasks } = this.state;
     const activeTasks = tasks.active;
     const completedTasks = tasks.completed;
-    const { isFetched } = this.props;
+    const { fetching, fetched } = this.props;
 
     let functions = {
       toggleCompleted: this.toggleCompleted,
@@ -190,36 +193,44 @@ export default class Dashboard extends React.Component {
     };
 
     return(
-      <div className={`row ${isFetched ? '' : ' fetching'}`}>
-
+      <div className={`row ${fetching ? ' fetching' : ''}`}>
         <div className="col-md-8">
+          <div className="dashboard">
 
-          <h4>==/ TASKS LIST \==</h4>
-
-          {(tasks.all && tasks.all.length) ?
-
-            <div>
-              <div className="tasks-containers-overlap">
-                <TasksContainer
-                  tasks={activeTasks}
-                  checkedTasks={checkedTasks.active}
-                  isActive={true}
-                  functions={functions}
-                />
-                <TasksContainer
-                  tasks={completedTasks}
-                  checkedTasks={checkedTasks.completed}
-                  isActive={false}
-                  functions={functions}
-                />
+            { fetching ?
+              <div className="alert alert-info">
+                <span className="spin-wrap">
+                  <i class="fa fa-spinner fa-spin fa-2x"></i>
+                </span>
               </div>
-            </div>
-          :
-            <div className="alert alert-info">
-              <h3 className="no-task-existence-title">There are no tasks yet!</h3>
-            </div>
-          }
+              :
+              (tasks.all && tasks.all.length) ?
 
+                <div>
+                  <div className="tasks-containers-overlap">
+                    <TasksContainer
+                      tasks={activeTasks}
+                      checkedTasks={checkedTasks.active}
+                      isActive={true}
+                      functions={functions}
+                    />
+                    <TasksContainer
+                      tasks={completedTasks}
+                      checkedTasks={checkedTasks.completed}
+                      isActive={false}
+                      functions={functions}
+                    />
+                  </div>
+                </div>
+              :
+                <div className="alert alert-info">
+                  <span className="spin-wrap">
+                    <h3 className="dashboard-info-title">There are no tasks yet!</h3>
+                  </span>
+                </div>
+            }
+
+          </div>
         </div>
 
         <div className="col-md-4">

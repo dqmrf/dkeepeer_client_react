@@ -7,11 +7,14 @@ import FormDatePicker            from '../Layout/Form/DatePicker';
 import extractPropertyFromObject from '../../utils/extractPropertyFromObject';
 
 @connect(state => ({
-  isFetched: state.tasks.fetched,
+  fetching: state.tasks.fetching.create,
+  fetched: state.tasks.fetched.create
 }), {})
 export default class TaskForm extends React.Component {
   static propTypes = {
-    onSave: PropTypes.func.isRequired
+    onSave: PropTypes.func.isRequired,
+    fetching: PropTypes.bool.isRequired,
+    fetched: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -49,20 +52,24 @@ export default class TaskForm extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  handleSubmit = model => {
-    const { isFetched } = this.props;
-    const { task } = this.state;
-    const taskValues = extractPropertyFromObject(task, 'value');
+  componentWillReceiveProps(nextProps) {
+    const { fetching } = this.props;
 
-    this.props.onSave(taskValues);
-
-    if (isFetched) {
+    if (nextProps.fetched === true && fetching === true) {
       this.setState({
         task: this.taskState,
         startDate: ''
       });
       this.resetForm();
     }
+  }
+
+  handleSubmit = model => {
+    const { fetching } = this.props;
+    const { task } = this.state;
+    const taskValues = extractPropertyFromObject(task, 'value');
+
+    this.props.onSave(taskValues);
   }
 
   resetForm() {
@@ -111,6 +118,7 @@ export default class TaskForm extends React.Component {
 
   render() {
     const { title, description, priority, due_date } = this.state.task;
+    const { fetching } = this.props;
 
     return(
       <Formsy.Form 
@@ -172,8 +180,16 @@ export default class TaskForm extends React.Component {
         <button 
           type="submit" 
           className="btn btn-success"
-          disabled={!this.state.canSubmit}
-        >Create task</button>
+          disabled={!this.state.canSubmit || fetching}
+        >
+          { fetching ?
+            <span className="spin-wrap">
+              <span>Create task</span>
+              <i class="fa fa-circle-o-notch fa-spin"></i>
+            </span> 
+            : 'Create task'
+          }
+        </button>
       </Formsy.Form>
     );
   }

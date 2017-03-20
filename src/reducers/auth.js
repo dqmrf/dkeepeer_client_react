@@ -1,4 +1,5 @@
 import Actions from '../constants/actions';
+import cookie  from '../utils/cookie';
 
 const {
   ROUTER_STATE_CHANGE,
@@ -18,7 +19,7 @@ const {
 } = Actions;
 
 const initialState = {
-  token: null,
+  token: cookie.get('token') || null,
   fetching: {
     signin: false,
     signup: false,
@@ -76,6 +77,8 @@ export default (state = initialState, action) => {
     } 
 
     case LOGIN_FAILURE: {
+      const { error } = action.payload;
+
       return {
         ...state,
         fetching: {
@@ -86,7 +89,7 @@ export default (state = initialState, action) => {
           ...state.fetched,
           signin: true
         },
-        error: action.payload
+        error
       };
     }
 
@@ -106,6 +109,8 @@ export default (state = initialState, action) => {
     } 
 
     case SIGNUP_FAILURE: {
+      const { error } = action.payload;
+
       return {
         ...state,
         fetching: {
@@ -116,7 +121,7 @@ export default (state = initialState, action) => {
           ...state.fetched,
           signup: true
         },
-        error: action.payload
+        error
       };
     }
 
@@ -136,6 +141,8 @@ export default (state = initialState, action) => {
     }
 
     case EMAIL_CONFIRMATION_REJECTED: {
+      const { error } = action.payload;
+
       return {
         ...state,
         fetching: {
@@ -146,7 +153,7 @@ export default (state = initialState, action) => {
           ...state.fetched,
           confirmation: true
         },
-        error: action.payload
+        error
       };
     }
 

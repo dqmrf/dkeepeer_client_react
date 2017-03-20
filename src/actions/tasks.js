@@ -35,7 +35,9 @@ const apiEndpoint = `${baseUrl}/api/tasks`;
 
 export function fetchTasks(router) {
   return (dispatch, getState) => {
-    dispatch({ type: FETCHING_TASK });
+    const field = 'tasks';
+
+    dispatch({ type: FETCHING_TASK, payload: field });
 
     const { auth: { token } } = getState();
 
@@ -44,7 +46,7 @@ export function fetchTasks(router) {
     let tasks = [];
     let headers = getHeaders(token);
     let errHandler = new ErrorThrower(dispatch, { 
-      type: FETCH_TASKS_REJECTED
+      type: FETCH_TASKS_REJECTED, payload: { field }
     });
 
     axios.get(apiEndpoint, { headers })
@@ -71,7 +73,9 @@ export function fetchTasks(router) {
 
 export function fetchTask(id) {
   return (dispatch, getState) => {
-    dispatch({ type: FETCHING_TASK });
+    const field = 'task';
+
+    dispatch({ type: FETCHING_TASK, payload: field });
 
     const { auth: { token } } = getState();
 
@@ -79,7 +83,7 @@ export function fetchTask(id) {
 
     const headers = getHeaders(token);
     let errHandler = new ErrorThrower(dispatch, { 
-      type: FETCH_TASK_REJECTED
+      type: FETCH_TASK_REJECTED, payload: { field }
     });
 
     axios.get(`${apiEndpoint}/${id}`, { headers })
@@ -98,7 +102,9 @@ export function fetchTask(id) {
 
 export function createTask(task) {
   return (dispatch, getState) => {
-    dispatch({ type: FETCHING_TASK });
+    const field = 'create';
+
+    dispatch({ type: FETCHING_TASK, payload: field });
 
     const { auth: { token } } = getState();
 
@@ -107,7 +113,7 @@ export function createTask(task) {
     let body, headers;
     let { due_date } = task;
     let errHandler = new ErrorThrower(dispatch, { 
-      type: CREATE_TASK_REJECTED
+      type: CREATE_TASK_REJECTED, payload: { field }
     });
 
     task.due_date = fixDateBeforeStringify(due_date);
@@ -135,7 +141,9 @@ export function createTask(task) {
 
 export function updateTask(id, task) {
   return (dispatch, getState) => {
-    dispatch({ type: FETCHING_TASK });
+    const field = 'update';
+
+    dispatch({ type: FETCHING_TASK, payload: field });
 
     const { auth: { token } } = getState();
 
@@ -144,7 +152,7 @@ export function updateTask(id, task) {
     let body, headers;
     let { due_date } = task;
     let errHandler = new ErrorThrower(dispatch, { 
-      type: UPDATE_TASK_REJECTED
+      type: UPDATE_TASK_REJECTED, payload: { field }
     });
 
     task.due_date = fixDateBeforeStringify(due_date);
@@ -172,7 +180,9 @@ export function updateTask(id, task) {
 
 export function destroyTask(id) {
   return (dispatch, getState) => {
-    dispatch({ type: FETCHING_TASK });
+    const field = 'destroy';
+
+    dispatch({ type: FETCHING_TASK, payload: field });
     
     const { auth: { token } } = getState();
 
@@ -180,7 +190,7 @@ export function destroyTask(id) {
 
     let headers = getHeaders(token);
     let errHandler = new ErrorThrower(dispatch, { 
-      type: DESTROY_TASK_REJECTED
+      type: DESTROY_TASK_REJECTED, payload: { field }
     });
 
     headers['Content-Type'] = 'application/json';
@@ -205,7 +215,9 @@ export function destroyTask(id) {
 
 export function destroyTasks(ids) {
   return (dispatch, getState) => {
-    dispatch({ type: FETCHING_TASK });
+    const field = 'destroy';
+
+    dispatch({ type: FETCHING_TASK, payload: field });
 
     const { auth: { token } } = getState();
 
@@ -214,7 +226,7 @@ export function destroyTasks(ids) {
     let body = { tasks: ids }
     let headers = getHeaders(token);
     let errHandler = new ErrorThrower(dispatch, { 
-      type: DESTROY_TASKS_REJECTED
+      type: DESTROY_TASKS_REJECTED, payload: { field }
     });
     
     headers['Content-Type'] = 'application/json';

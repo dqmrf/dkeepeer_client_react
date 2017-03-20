@@ -9,7 +9,9 @@ import FormDatePicker            from '../Layout/Form/DatePicker';
 import extractPropertyFromObject from '../../utils/extractPropertyFromObject';
 
 @connect(state => ({
-  task: state.tasks.task
+  task: state.tasks.task,
+  fetching: state.tasks.fetching.update,
+  fetched: state.tasks.fetched.update
 }), {
   fetchTask,
   updateTask
@@ -17,7 +19,9 @@ import extractPropertyFromObject from '../../utils/extractPropertyFromObject';
 export default class TaskEditor extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
-    updateTask: PropTypes.func.isRequired
+    updateTask: PropTypes.func.isRequired,
+    fetching: PropTypes.bool.isRequired,
+    fetched: PropTypes.bool.isRequired
   };
 
   static contextTypes = {
@@ -69,33 +73,35 @@ export default class TaskEditor extends React.Component {
   componentWillReceiveProps(newProps) {
     const { task } = newProps;
 
-    this.setState((prevState) => ({
-      ...prevState,
-      task: {
-        ...prevState.task,
-        title: {
-          ...prevState.task.title,
-          value: task.title
+    if (task !== this.props.task) {
+      this.setState((prevState) => ({
+        ...prevState,
+        task: {
+          ...prevState.task,
+          title: {
+            ...prevState.task.title,
+            value: task.title
+          },
+          description: {
+            ...prevState.task.description,
+            value: task.description
+          },
+          priority: {
+            ...prevState.task.priority,
+            value: task.priority
+          },
+          due_date: {
+            ...prevState.task.due_date,
+            value: task.due_date
+          },
+          completed: {
+            ...prevState.task.completed,
+            value: task.completed
+          }
         },
-        description: {
-          ...prevState.task.description,
-          value: task.description
-        },
-        priority: {
-          ...prevState.task.priority,
-          value: task.priority
-        },
-        due_date: {
-          ...prevState.task.due_date,
-          value: task.due_date
-        },
-        completed: {
-          ...prevState.task.completed,
-          value: task.completed
-        }
-      },
-      startDate: Moment(task.due_date)
-    }));
+        startDate: Moment(task.due_date)
+      }));
+    }
   }
 
   handleChange = (field, values) => {
@@ -152,6 +158,7 @@ export default class TaskEditor extends React.Component {
 
   render() {
     const { title, description, priority, due_date } = this.state.task;
+    const { fetching } = this.props;
 
     return(
       <div className="row">
@@ -216,8 +223,16 @@ export default class TaskEditor extends React.Component {
             <button 
               type="submit" 
               className="btn btn-success"
-              disabled={!this.state.canSubmit}
-            >Update task</button>
+              disabled={!this.state.canSubmit || fetching}
+            >
+              { fetching ?
+                <span className="spin-wrap">
+                  <span>Update task</span>
+                  <i class="fa fa-circle-o-notch fa-spin"></i>
+                </span> 
+                : 'Update task'
+              }
+            </button>
           </Formsy.Form>
         </div>
       </div>
