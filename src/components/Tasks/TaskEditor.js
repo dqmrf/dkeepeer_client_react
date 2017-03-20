@@ -52,7 +52,7 @@ export default class TaskEditor extends React.Component {
 
     this.state = {
       task: this.taskState,
-      startDate: Moment(),
+      startDate: '',
       canSubmit: true
     };
   }

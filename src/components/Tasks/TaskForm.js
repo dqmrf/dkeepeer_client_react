@@ -42,7 +42,7 @@ export default class TaskForm extends React.Component {
 
     this.state = {
       task: this.taskState,
-      startDate: Moment(),
+      startDate: '',
       canSubmit: true
     };
 
@@ -59,7 +59,7 @@ export default class TaskForm extends React.Component {
     if (isFetched) {
       this.setState({
         task: this.taskState,
-        startDate: Moment()
+        startDate: ''
       });
       this.resetForm();
     }

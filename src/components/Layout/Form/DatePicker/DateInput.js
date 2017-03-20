@@ -8,13 +8,12 @@ export default class DateInput extends React.Component {
 
   render () {
     return (
-      <button
-        type="button"
-        className="btn btn-default btn-block"
-        onClick={this.props.onClick}
-      >
-        {this.props.value}
-      </button>
+      <input 
+        type="text" 
+        className="form-control" 
+        onClick={this.props.onClick} 
+        value={this.props.value} 
+      />
     )
   }
 }

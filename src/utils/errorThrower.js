@@ -38,20 +38,21 @@ export default class ErrorThrower {
   }
 
   handleUnknownError(err, callback) {
-    const { type} = this._params;
+    const dispatch = this._dispatch;
+    const { type } = this._params;
     let errorMsg = 'Unknown error occured! Please, try again later.';
 
-    this.performCallback(callback);
+    this._performCallback(callback);
 
-    if (this._dispatch && type) {
+    if (dispatch && type) {
       dispatch({ type: type, error: err || null });
     }
 
-    this.throwAlert(errorMsg, this._dispatch);
+    this._throwAlert(errorMsg, dispatch);
   }
 
   _emit(type, payload) {
-    type ? this._dispatch({ type, payload }) : null;
+    type ? dispatch({ type, payload }) : null;
   }
 
   _throwAlert(message, dispatch) {
