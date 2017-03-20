@@ -9,10 +9,7 @@ module.exports = function() {
       'app-config': JSON.stringify(require('./../app/dev.json'))
     },
     plugins: [
-      new webpack.NamedModulesPlugin(),
-      new webpack.optimize.CommonsChunkPlugin({
-        name: ['polyfills', 'vendor'].reverse()
-      }),
+      new webpack.NamedModulesPlugin()
     ]
   });
 };

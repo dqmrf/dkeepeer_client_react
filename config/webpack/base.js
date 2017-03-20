@@ -52,6 +52,9 @@ module.exports = function() {
       }]
     },
     plugins: [
+      new webpack.optimize.CommonsChunkPlugin({
+        name: ['polyfills', 'vendor'].reverse()
+      }),
       new webpack.LoaderOptionsPlugin({
         test: /(\.css$|\.sass$|\.styl$)/,
         options: {
