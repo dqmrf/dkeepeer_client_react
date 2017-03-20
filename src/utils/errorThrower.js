@@ -2,14 +2,14 @@ import { addAlertAsync } from '../actions/alerts';
 
 export default class ErrorThrower {
   constructor(dispatch, params) {
-    this._dispatch = dispatch;
-    this._params = params;
+    this.dispatch = dispatch;
+    this.params = params;
   }
 
   handleError(err, callback) {
     if (callback && this._performCallback(callback) === false) { return; }
 
-    const { type } = this._params;
+    const { type } = this.params;
     const { response } = err;
     const { 
       error,
@@ -38,8 +38,7 @@ export default class ErrorThrower {
   }
 
   handleUnknownError(err, callback) {
-    const dispatch = this._dispatch;
-    const { type } = this._params;
+    const { dispatch, params: { type } } = this;
     let errorMsg = 'Unknown error occured! Please, try again later.';
 
     this._performCallback(callback);
@@ -52,7 +51,7 @@ export default class ErrorThrower {
   }
 
   _emit(type, payload) {
-    type ? dispatch({ type, payload }) : null;
+    type ? this.dispatch({ type, payload }) : null;
   }
 
   _throwAlert(message, dispatch) {
@@ -60,7 +59,7 @@ export default class ErrorThrower {
       message, 
       type: 'danger',
       delay: 6000
-    })(this._dispatch);
+    })(this.dispatch);
   }
 
   _performCallback(cb) {
