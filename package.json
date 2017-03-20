@@ -7,7 +7,8 @@
   "main": "webpack.config.js",
   "scripts": {
     "start": "NODE_ENV=production node ./server.js",
-    "start-pm": "NODE_ENV=production pm2 start ./server.js",
+    "nodemon": "NODE_ENV=production nodemon ./server.js",
+    "pm2": "NODE_ENV=production pm2 start ./server.js",
     "build": "webpack -p --env=prod --progress --profile --colors",
     "dev": "NODE_ENV=development webpack-dev-server --env=dev --content-base src --inline --hot --progress --profile --colors"
   },
@@ -58,6 +59,7 @@
     "stylus-loader": "^2.4.0",
     "url-loader": "^0.5.8",
     "webpack": "^2.2.0",
+    "webpack-cleanup-plugin": "^0.5.1",
     "webpack-dev-server": "^2.2.0",
     "webpack-merge": "^4.1.0"
   },

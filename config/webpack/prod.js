@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
+const WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 const commonConfig = require('./base.js');
 
 module.exports = function() {
@@ -25,7 +26,8 @@ module.exports = function() {
           screw_ie8: true
         },
         comments: false
-      })
+      }),
+      new WebpackCleanupPlugin()
     ],
   });
 };
